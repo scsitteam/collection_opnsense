@@ -16,10 +16,11 @@ class Peer(BaseModule):
         'add': 'addClient',
         'del': 'delClient',
         'set': 'setClient',
-        'search': 'get',
+        'search': 'searchClient',
+        'detail': 'getClient',
         'toggle': 'toggleClient',
     }
-    API_KEY_PATH = 'client.clients.client'
+    API_KEY_PATH = 'client'
     API_MOD = 'wireguard'
     API_CONT = 'client'
     API_CONT_REL = 'service'

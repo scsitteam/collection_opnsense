@@ -268,14 +268,21 @@ def get_selected_list(data: dict, remove_empty: bool = False) -> list:
         # if function is re-applied
         return data
 
+    if isinstance(data, str):
+        return data.split(',')
+
     selected = []
     if len(data) > 0:
-        for key, values in data.items():
-            if remove_empty and key in [None, '', ' ']:
-                continue
+        try:
+            for key, values in data.items():
+                if remove_empty and key in [None, '', ' ']:
+                    continue
 
-            if is_true(values['selected']):
-                selected.append(key)
+                if is_true(values['selected']):
+                    selected.append(key)
+
+        except AttributeError:
+            exit_bug(f"Got data entry that is not a dictionary => '{data}'")
 
     selected.sort()
     return selected
@@ -395,7 +402,6 @@ def simplify_translate(
 ) -> dict:
     # pylint: disable=R0912
     simple = {}
-    translate_fields = []
     if translate is None:
         translate = {}
 
@@ -413,13 +419,12 @@ def simplify_translate(
 
     # translate api-fields to ansible-fields
     for k, v in translate.items():
-        translate_fields.append(v)
-
         if v in existing:
             simple[k] = existing[v]
 
+    translate_fields = translate.values()
     for k in existing:
-        if k not in translate_fields and k not in ignore:
+        if k not in translate_fields and k not in translate and k not in ignore:
             simple[k] = existing[k]
 
     # correct value types to match (for diff-checks)
