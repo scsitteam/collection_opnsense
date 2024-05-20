@@ -269,6 +269,9 @@ def get_selected_list(data: dict, remove_empty: bool = False) -> list:
         return data
 
     if isinstance(data, str):
+        if data.strip() == '':
+            return []
+
         return data.split(',')
 
     selected = []
