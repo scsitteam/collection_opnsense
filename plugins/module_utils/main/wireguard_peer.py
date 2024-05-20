@@ -26,14 +26,14 @@ class Peer(BaseModule):
     API_CONT_REL = 'service'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = [
-        'public_key', 'psk', 'port', 'allowed_ips', 'endpoint', 'keepalive',
+        'public_key', 'psk', 'port', 'allowed_ips', 'server', 'keepalive',
     ]
     FIELDS_ALL = [FIELD_ID, 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'public_key': 'pubkey',
         'allowed_ips': 'tunneladdress',
-        'endpoint': 'serveraddress',
+        'server': 'serveraddress',
         'port': 'serverport',
     }
     FIELDS_TYPING = {
@@ -41,6 +41,7 @@ class Peer(BaseModule):
         'list': ['allowed_ips'],
         'int': ['port', 'keepalive'],
     }
+    FIELDS_IGNORE = ['endpoint']  # empty field ?!
     FIELDS_DIFF_NO_LOG = ['psk']
     INT_VALIDATIONS = {
         'keepalive': {'min': 1, 'max': 86400},
@@ -82,10 +83,10 @@ class Peer(BaseModule):
                     f"nor a valid network!"
                 )
 
-        if not is_unset(self.p['endpoint']) and \
-                not is_ip(self.p['endpoint']) and not is_valid_domain(self.p['endpoint']):
+        if not is_unset(self.p['server']) and \
+                not is_ip(self.p['server']) and not is_valid_domain(self.p['server']):
             self.m.fail_json(
-                f"Peer endpoint '{self.p['endpoint']}' is neither a valid IP-address "
+                f"Peer endpoint/server '{self.p['server']}' is neither a valid IP-address "
                 f"nor a valid domain!"
             )
 

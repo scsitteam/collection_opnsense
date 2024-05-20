@@ -38,9 +38,9 @@ def run_module():
                 'addresses', 'address', 'tunnel_address', 'allowed',
             ]
         ),
-        endpoint=dict(
+        server=dict(
             type='str', required=False,
-            aliases=['target', 'server_address', 'serveraddress', 'server']
+            aliases=['target', 'server_address', 'serveraddress', 'endpoint']
         ),
         port=dict(type='int', required=False),
         keepalive=dict(type='int', required=False),

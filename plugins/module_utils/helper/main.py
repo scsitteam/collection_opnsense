@@ -417,53 +417,61 @@ def simplify_translate(
     if value_map is None:
         value_map = {}
 
-    # translate api-fields to ansible-fields
-    for k, v in translate.items():
-        if v in existing:
-            simple[k] = existing[v]
+    try:
+        # translate api-fields to ansible-fields
+        for k, v in translate.items():
+            if v in existing:
+                simple[k] = existing[v]
 
-    translate_fields = translate.values()
-    for k in existing:
-        if k not in translate_fields and k not in translate and k not in ignore:
-            simple[k] = existing[k]
+        translate_fields = translate.values()
+        for k in existing:
+            if k not in translate_fields and k not in ignore:
+                simple[k] = existing[k]
 
-    # correct value types to match (for diff-checks)
-    for t, fields in typing.items():
-        for f in fields:
-            if t == 'bool':
-                simple[f] = is_true(simple[f])
+        # correct value types to match (for diff-checks)
+        for t, fields in typing.items():
+            for f in fields:
+                if t == 'bool':
+                    simple[f] = is_true(simple[f])
 
-            elif t == 'int':
-                simple[f] = format_int(simple[f])
+                elif t == 'int':
+                    simple[f] = format_int(simple[f])
 
-            elif t == 'list':
-                simple[f] = get_selected_list(data=simple[f], remove_empty=True)
+                elif t == 'list':
+                    simple[f] = get_selected_list(data=simple[f], remove_empty=True)
 
-            elif t == 'select':
-                simple[f] = get_selected(simple[f])
+                elif t == 'select':
+                    simple[f] = get_selected(simple[f])
 
-            elif t == 'select_opt_list':
-                simple[f] = get_selected_opt_list(simple[f])
+                elif t == 'select_opt_list':
+                    simple[f] = get_selected_opt_list(simple[f])
 
-            elif t == 'select_opt_list_idx':
-                simple[f] = get_selected_opt_list_idx(simple[f])
+                elif t == 'select_opt_list_idx':
+                    simple[f] = get_selected_opt_list_idx(simple[f])
 
-    for f, vmap in value_map.items():
-        try:
-            for pretty_value, opn_value in vmap.items():
-                if simple[f] == opn_value:
-                    simple[f] = pretty_value
-                    break
+        for f, vmap in value_map.items():
+            try:
+                for pretty_value, opn_value in vmap.items():
+                    if simple[f] == opn_value:
+                        simple[f] = pretty_value
+                        break
 
-        except KeyError:
-            pass
+            except KeyError:
+                pass
 
-    for k, v in simple.items():
-        if isinstance(v, str) and v.isnumeric():
-            simple[k] = int(simple[k])
+        for k, v in simple.items():
+            if isinstance(v, str) and v.isnumeric():
+                simple[k] = int(simple[k])
 
-        elif isinstance(v, bool) and k in bool_invert:
-            simple[k] = not simple[k]
+            elif isinstance(v, bool) and k in bool_invert:
+                simple[k] = not simple[k]
+
+    except KeyError as err:
+        exit_bug(
+            f"Failed to translate API entry to Ansible entry! Maybe the API changed lately? "
+            f"Failed field: {err} | "
+            f"API entry: '{existing}' '{simple}'"
+        )
 
     return simple
 
