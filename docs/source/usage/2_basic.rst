@@ -2,6 +2,10 @@
 
 .. include:: ../_include/head.rst
 
+.. |img_ansible_execution_local| image:: ../../_static/img/ansible_execution_local.jpg
+   :class: wiki-img
+
+
 =========
 2 - Basic
 =========
@@ -12,6 +16,33 @@ Prerequisites
 You need to create API credentials as described in the `OPNSense documentation <https://docs.opnsense.org/development/how-tos/api.html#creating-keys>`_.
 
 **Menu**: System - Access - Users - Edit {admin user} - Add api key
+
+----
+
+Inventory & Playbook
+====================
+
+Make sure to set :code:`connection: local` in your OPNSense-Playbook, so the Module gets executed on your Ansible-Controller machine!
+
+See also: `How Ansible Works <https://www.ansible.com/how-ansible-works/>`_
+
+|img_ansible_execution_local|
+
+If you are running the modules over hosts in your inventory - you would do it like that:
+
+.. code-block:: yaml
+
+    - hosts: firewalls
+      connection: local  # execute modules on controller
+      gather_facts: no
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.alias:
+            firewall: "{{ ansible_host }}"  # or use a per-host variable to store the FQDN..
+
+
+----
+
 
 SSL Certificate
 ===============
@@ -71,20 +102,7 @@ If some parameters will be the same every time - use 'module_defaults':
             name: 'ANSIBLE_TEST1'
             content: ['1.1.1.1']
 
-Inventory
-=========
-
-If you are running the modules over hosts in your inventory - you would do it like that:
-
-.. code-block:: yaml
-
-    - hosts: firewalls
-      connection: local  # execute modules on controller
-      gather_facts: no
-      tasks:
-        - name: Example
-          ansibleguy.opnsense.alias:
-            firewall: "{{ ansible_host }}"  # or use a per-host variable to store the FQDN..
+----
 
 Vault
 =====
@@ -130,6 +148,7 @@ To decrypt those secrets at runtime, you need to supply the 'ask-vault-pass' arg
 
     ansible-playbook -D opnsense.yml --ask-vault-pass
 
+----
 
 Running
 =======
