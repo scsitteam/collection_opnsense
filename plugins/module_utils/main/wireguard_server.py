@@ -123,10 +123,14 @@ class Server(BaseModule):
                 existing[peer['name']] = peer['uuid']
 
             for peer in self.p['peers']:
-                if peer not in existing:
+                if peer not in existing and peer not in existing.values():
                     self.m.fail_json(f"Peer '{peer}' does not exist!")
 
-                peers.append(existing[peer])
+                if peer in existing:
+                    peers.append(existing[peer])
+
+                else:
+                    peers.append(peer)
 
         return peers
 
