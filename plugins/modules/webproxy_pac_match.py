@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-# Copyright: (C) 2023, AnsibleGuy <guy@ansibleguy.net>
+# Copyright: (C) 2024, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 from ansible.module_utils.basic import AnsibleModule
@@ -144,8 +145,6 @@ def run_module():
         module.params[month_field] = MONTH_MAPPING[module.params[month_field]]
 
     module_wrapper(Match(module=module, result=result))
-
-    result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 
 

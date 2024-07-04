@@ -4,6 +4,7 @@ from inspect import getfile as inspect_getfile
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls import BaseModule
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.utils import profiler
+from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
 
 
 def module_process(instance: BaseModule):
@@ -21,4 +22,5 @@ def module_wrapper(instance: BaseModule):
         module_name = inspect_getfile(inspect_stack()[1][0]).rsplit('/', 1)[1].rsplit('.', 1)[0]
         return profiler(check=module_process, module_name=module_name, kwargs={'instance': instance})
 
+    instance.r['diff'] = diff_remove_empty(instance.r['diff'])
     return module_process(instance)

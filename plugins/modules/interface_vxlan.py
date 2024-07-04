@@ -1,6 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 
-# Copyright: (C) 2023, AnsibleGuy <guy@ansibleguy.net>
+# Copyright: (C) 2024, AnsibleGuy <guy@ansibleguy.net>
 # GNU General Public License v3.0+ (see https://www.gnu.org/licenses/gpl-3.0.txt)
 
 # see: https://docs.opnsense.org/development/api/core/interfaces.html
@@ -71,8 +72,6 @@ def run_module():
     )
 
     module_wrapper(Vxlan(module=module, result=result))
-
-    result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 
 
