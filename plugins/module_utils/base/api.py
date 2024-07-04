@@ -57,10 +57,11 @@ class Session:
             )
 
         except HTTPX_EXCEPTIONS as error:
-            raise api_pretty_exception(
-                method='GET', error=error,
+            api_pretty_exception(
+                m=self.m, method='GET', error=error,
                 url=f'{self.s.base_url}{call_url}',
             )
+            raise
 
         return response
 
@@ -95,10 +96,11 @@ class Session:
             )
 
         except HTTPX_EXCEPTIONS as error:
-            raise api_pretty_exception(
-                method='POST', error=error,
+            api_pretty_exception(
+                m=self.m, method='POST', error=error,
                 url=f'{self.s.base_url}{call_url}',
             )
+            raise
 
         return response
 

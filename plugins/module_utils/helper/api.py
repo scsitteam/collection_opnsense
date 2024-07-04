@@ -188,15 +188,15 @@ def check_response(module: AnsibleModule, cnf: dict, response) -> dict:
     return json
 
 
-def api_pretty_exception(method: str, url: str, error) -> ConnectionError:
+def api_pretty_exception(m: AnsibleModule, method: str, url: str, error):
     call = f'{method} => {url}'
-    msg = f"Unable to connect '{call}'!"
+    msg = f"Unable to connect '{call}'"
 
     if str(error).find('timed out') != -1:
-        msg = f"Got timeout calling '{call}'!"
+        msg = f"Got timeout calling '{call}'"
 
     if str(error).find('CERTIFICATE_VERIFY_FAILED') != -1 or str(error).find('certificate verify failed') != -1:
         msg = f"SSL verification failed '{url}'! Make sure to follow the the documentation: "\
               "https://opnsense.ansibleguy.net/en/latest/usage/2_basic.html#ssl-certificate"
 
-    return ConnectionError(msg)
+    m.fail_json(f"{msg} ({error})")
