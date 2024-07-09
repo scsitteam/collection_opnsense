@@ -14,9 +14,19 @@
       ansibleguy.opnsense.system:
         action: 'update'
 
+    - name: Upgrade with wait - failing because not forced
+      ansibleguy.opnsense.system:
+        action: 'upgrade'
+        wait: true
+        timeout: 120
+        poll_interval: 2
+      register: opn_up1
+      failed_when: not opn_up1.failed
+
     - name: Upgrade with wait
       ansibleguy.opnsense.system:
         action: 'upgrade'
+        force_upgrade: true
         wait: true
         timeout: 120
         poll_interval: 2

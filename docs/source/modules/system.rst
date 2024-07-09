@@ -13,6 +13,15 @@ System
 **API Docs**: `Core - Firmware <https://docs.opnsense.org/development/api/core/firmware.html>`_
 
 
+.. warning::
+
+    **Only** use the :code:`upgrade` action in **test-environments**!
+
+    When in production - use the WebUI to upgrade your boxes.
+
+    The box is rebooted while performing an update - it might be dead.
+
+
 Definition
 **********
 
@@ -58,10 +67,11 @@ Examples
           ansibleguy.opnsense.system:
             action: 'update'
 
-        - name: Start upgrade - will wait until finished
+        - name: Start upgrade - will wait until finished (WARNING: ONLY USE IN TEST-ENVIRONMENTS)
           ansibleguy.opnsense.system:
             action: 'upgrade'
             timeout: 120  # depends on your download speed and firmware-version
+            force_upgrade: true
 
         - name: Run audit
           ansibleguy.opnsense.system:

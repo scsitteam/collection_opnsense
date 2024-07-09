@@ -28,11 +28,14 @@ def run_module():
     module_args = dict(
         action=dict(
             type='str', required=True,
-            choices=['poweroff', 'reboot', 'update', 'upgrade', 'audit']
+            choices=['poweroff', 'reboot', 'update', 'upgrade', 'audit'],
+            description="WARNING: Only use the 'upgrade' option in test-environments. "
+                        "In production you should use the WebUI to upgrade!"
         ),
         wait=dict(type='bool', required=False, default=True),
         wait_timeout=dict(type='int', required=False, default=90),
         poll_interval=dict(type='int', required=False, default=2),
+        force_upgrade=dict(type='bool', required=False, default=False),
         **OPN_MOD_ARGS
     )
 
@@ -46,6 +49,13 @@ def run_module():
         'failed': False,
         'timeout_exceeded': False,
     }
+
+    if module.params['action'] == 'upgrade' and not module.params['force_upgrade']:
+        module.fail_json(
+            "If you really want to perform an upgrade - you need to additionally supply the 'force_upgrade' argument. "
+            "WARNING: Using the 'upgrade' action is only recommended for test-environments. "
+            "In production you should use the WebUI to upgrade!"
+        )
 
     if not module.check_mode:
         with Session(module=module) as s:
