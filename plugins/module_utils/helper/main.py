@@ -34,6 +34,9 @@ def is_ip(host: str, ignore_empty: bool = False) -> bool:
     if ignore_empty and is_unset(host):
         return True
 
+    if host.find('[') != -1:
+        host = host[1:-1]
+
     try:
         ip_address(host)
         return True
@@ -54,9 +57,12 @@ def is_ip4(host: str, ignore_empty: bool = False) -> bool:
         return False
 
 
-def is_ip6(host: str, ignore_empty: bool = False) -> bool:
+def is_ip6(host: str, ignore_empty: bool = False, strip_enclosure: bool = True) -> bool:
     if ignore_empty and is_unset(host):
         return True
+
+    if strip_enclosure and host.find('[') != -1:
+        host = host[1:-1]
 
     try:
         IPv6Address(host)
