@@ -31,6 +31,7 @@ def run_module():
                 'alias',
                 'rule',
                 'route',
+                'routing'
                 'cron',
                 'unbound',
                 'syslog',
@@ -81,6 +82,10 @@ def run_module():
         elif target == 'route':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.route import \
                 Route as Target_Obj
+
+        elif target == 'routing':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.routing import \
+                Routing as Target_Obj
 
         elif target == 'cron':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import \

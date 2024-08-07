@@ -89,6 +89,8 @@ action_groups:
     - ansibleguy.opnsense.nginx_upstream_server
   route:
     - ansibleguy.opnsense.route
+  routing:
+    - ansibleguy.opnsense.routing
   nat:
     - ansibleguy.opnsense.source_nat
   system:
@@ -133,6 +135,7 @@ action_groups:
           - ansibleguy.opnsense.webproxy
           - ansibleguy.opnsense.nginx
           - ansibleguy.opnsense.route
+          - ansibleguy.opnsense.routing
           - ansibleguy.opnsense.nat
           - ansibleguy.opnsense.system
           - ansibleguy.opnsense.ids
