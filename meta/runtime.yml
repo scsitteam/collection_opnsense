@@ -46,6 +46,7 @@ action_groups:
     - ansibleguy.opnsense.interface_vlan
     - ansibleguy.opnsense.interface_vxlan
     - ansibleguy.opnsense.interface_vip
+    - ansibleguy.opnsense.interface_lagg
   frr:
     - ansibleguy.opnsense.frr_diagnostic
     - ansibleguy.opnsense.frr_general
