@@ -247,6 +247,12 @@
         - 100
         - 101
 
+    - name: Cleanup lagg interfaces
+      ansibleguy.opnsense.interface_lagg:
+        members:
+          - 'vtnet0'
+        state: 'absent'
+
     - name: Cleanup source-nat
       ansibleguy.opnsense.source_nat:
         description: "{{ item }}"
