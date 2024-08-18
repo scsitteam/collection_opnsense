@@ -107,6 +107,8 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+        - 'ANSIBLE_TEST_1_3
+'
         - 'ANSIBLE_TEST_2_1'
 
     - name: Cleanup Unbound DNS domain-overrides
