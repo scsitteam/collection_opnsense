@@ -12,7 +12,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.validat
 
 def diff_remove_empty(diff: dict) -> dict:
     d = diff.copy()
-    for k in diff.keys():
+    for k in diff:
         if len(diff[k]) == 0:
             d.pop(k)
 

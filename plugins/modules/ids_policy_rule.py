@@ -56,8 +56,6 @@ def run_module():
     )
 
     module_wrapper(Rule(module=module, result=result))
-
-    result['diff'] = diff_remove_empty(result['diff'])
     module.exit_json(**result)
 
 
