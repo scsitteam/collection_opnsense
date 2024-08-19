@@ -574,7 +574,7 @@ class Base:
 
                 return False
 
-        if set_field in self.i.r['diff']['before']:
+        if 'before' in self.i.r['diff'] and set_field in self.i.r['diff']['before']:
             self.i.r['diff']['before'][set_field] = entry
 
         return True
