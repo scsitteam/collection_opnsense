@@ -31,7 +31,7 @@ def run_module():
                 'alias',
                 'rule',
                 'route',
-                'routing'
+                'gateway'
                 'cron',
                 'unbound',
                 'syslog',
