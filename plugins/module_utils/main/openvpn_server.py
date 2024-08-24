@@ -94,8 +94,6 @@ class Server(BaseModule):
         self.p['role'] = 'server'
 
         if self.p['state'] == 'present':
-            self.p['mode'] = self.p['mode'].upper()
-
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
             if is_unset(self.p['server_ip4']) and is_unset(self.p['server_ip6']):
