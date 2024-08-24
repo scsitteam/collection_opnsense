@@ -20,13 +20,6 @@ IPSec
 `IPSec Examples <https://docs.opnsense.org/manual/vpnet.html#new-23-1-vpn-ipsec-connections>`_ |
 `IPSec VTI <https://docs.opnsense.org/manual/how-tos/ipsec-s2s-conn-route.html>`_
 
-Limitations
-***********
-
-.. warning::
-
-    The IPSec modules can only be used on OPNSense version >= 23.1
-
 
 Definition
 **********

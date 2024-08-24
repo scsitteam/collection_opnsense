@@ -76,10 +76,6 @@ ansibleguy.opnsense.interface_vxlan
 ansibleguy.opnsense.interface_vip
 =================================
 
-.. warning::
-
-    This feature is only available in OPNSense version >= 23.1
-
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
