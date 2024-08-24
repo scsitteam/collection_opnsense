@@ -43,6 +43,12 @@ These internal certificates need to be created:
 * Client Certificate: `OpenVPN Client`
 * Server Certificate: `OpenVPN Server` - SAN `DNS:openvpn.intern`
 
+### Gateways
+
+The gateway tests will not work correctly if the LAN network mismatches.
+
+You can provide your GW IPs via env-vars: `TEST_FIREWALL_GW1` and `TEST_FIREWALL_GW2`
+
 ----
 
 ## Run

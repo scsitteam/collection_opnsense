@@ -83,9 +83,9 @@ def run_module():
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.route import \
                 Route as Target_Obj
 
-        elif target == 'routing':
-            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.routing import \
-                Routing as Target_Obj
+        elif target == 'gateway':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.gateway import \
+                Gw as Target_Obj
 
         elif target == 'cron':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.cron import \

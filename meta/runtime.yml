@@ -89,8 +89,7 @@ action_groups:
     - ansibleguy.opnsense.nginx_upstream_server
   route:
     - ansibleguy.opnsense.route
-  routing:
-    - ansibleguy.opnsense.routing
+    - ansibleguy.opnsense.gateway
   nat:
     - ansibleguy.opnsense.source_nat
   system:
@@ -135,7 +134,7 @@ action_groups:
           - ansibleguy.opnsense.webproxy
           - ansibleguy.opnsense.nginx
           - ansibleguy.opnsense.route
-          - ansibleguy.opnsense.routing
+          - ansibleguy.opnsense.gateway
           - ansibleguy.opnsense.nat
           - ansibleguy.opnsense.system
           - ansibleguy.opnsense.ids
@@ -175,3 +174,7 @@ plugin_routing:
       redirect: ansibleguy.opnsense.webproxy_pac_rule
     openvpn_client_overwrite:
       redirect: ansibleguy.opnsense.openvpn_client_override
+    routing:
+      redirect: ansibleguy.opnsense.gateway
+    gw:
+      redirect: ansibleguy.opnsense.gateway
