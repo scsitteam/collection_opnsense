@@ -20,6 +20,11 @@ IPSec
 `IPSec Examples <https://docs.opnsense.org/manual/vpnet.html#new-23-1-vpn-ipsec-connections>`_ |
 `IPSec VTI <https://docs.opnsense.org/manual/how-tos/ipsec-s2s-conn-route.html>`_
 
+Contribution
+************
+
+Thanks to `@atammy-narmi <https://github.com/atammy-narmi>`_ for developing the :code:`ipsec_psk` module!
+
 
 Definition
 **********

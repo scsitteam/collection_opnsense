@@ -14,6 +14,10 @@ DNS - Unbound - ACL
 
 **Service Docs**: `Unbound <https://docs.opnsense.org/manual/unbound.html>`_
 
+Contribution
+************
+
+Thanks to `@gjdoornink <https://github.com/gjdoornink>`_ for developing this module!
 
 Info
 ****

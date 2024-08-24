@@ -8,9 +8,9 @@
 
 **Service Docs**: [Unbound DNS](https://docs.opnsense.org/manual/unbound.html)
 
-## Requirements
+## Contribution
 
-This module requires OPNsense 23.7 or later.
+Thanks to [@gjdoornink](https://github.com/gjdoornink) for developing this module!
 
 ## Info
 

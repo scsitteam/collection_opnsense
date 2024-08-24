@@ -26,6 +26,11 @@ Gateway Groups
 
 **Service Docs**: `routings <https://docs.opnsense.org/manual/gateways.html>`_
 
+Contribution
+************
+
+Thanks to `@kdhlab <https://github.com/kdhlab>`_ for developing the :code:`gateway` module!
+
 
 Definition
 **********
