@@ -354,11 +354,11 @@ class Base:
 
         return self.build_request()
 
-    def _change_enabled_state(self, value: int) -> dict:
+    def _change_enabled_state(self) -> dict:
         return self._api_post({
             **self.i.call_cnf,
             'command': self.i.CMDS['toggle'],
-            'params': [getattr(self.i, self.i.EXIST_ATTR)[self.field_pk], value],
+            'params': [getattr(self.i, self.i.EXIST_ATTR)[self.field_pk]],
         })
 
     def _is_enabled(self, invert: bool) -> bool:
@@ -372,20 +372,30 @@ class Base:
     def enable(self, invert: bool = False) -> dict:
         if self.i.exists and not self._is_enabled(invert=invert):
             self.i.r['changed'] = True
-            self.i.r['diff']['before'] = {'enabled': False}
-            self.i.r['diff']['after'] = {'enabled': True}
+            if not invert:
+                self.i.r['diff']['before'] = {'enabled': False}
+                self.i.r['diff']['after'] = {'enabled': True}
+
+            else:
+                self.i.r['diff']['before'] = {'enabled': True}
+                self.i.r['diff']['after'] = {'enabled': False}
 
             if not self.i.m.check_mode:
-                return self._change_enabled_state(1)
+                return self._change_enabled_state()
 
     def disable(self, invert: bool = False) -> dict:
         if self.i.exists and self._is_enabled(invert=invert):
             self.i.r['changed'] = True
-            self.i.r['diff']['before'] = {'enabled': True}
-            self.i.r['diff']['after'] = {'enabled': False}
+            if not invert:
+                self.i.r['diff']['before'] = {'enabled': True}
+                self.i.r['diff']['after'] = {'enabled': False}
+
+            else:
+                self.i.r['diff']['before'] = {'enabled': False}
+                self.i.r['diff']['after'] = {'enabled': True}
 
             if not self.i.m.check_mode:
-                return self._change_enabled_state(0)
+                return self._change_enabled_state()
 
     def build_diff(self, data: dict) -> dict:
         if not isinstance(data, dict):
