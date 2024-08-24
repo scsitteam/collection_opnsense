@@ -19,7 +19,7 @@
         - 'alias'
         - 'rule'
         - 'route'
-        - 'cron'
+        # - 'cron'  # issue 88
         # - 'unbound'  taking way too long for testing (90+ sec)
         - 'syslog'
         - 'ipsec'
@@ -35,4 +35,4 @@
         - 'bind'
         - 'ids'
         - 'openvpn'
-        - 'gateway'
+        # - 'gateway'  # issue 88
