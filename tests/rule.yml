@@ -115,6 +115,14 @@
         description: 'ANSIBLE_TEST_1_2'
         action: 'block'
 
+    - name: Test port-range
+      ansibleguy.opnsense.rule:
+        source_net: '192.168.0.0/24'
+        destination_net: '192.168.2.0/24'
+        destination_port: '50000-51000'
+        protocol: 'TCP'
+        description: 'ANSIBLE_TEST_1_12'
+
     - name: Cleanup
       ansibleguy.opnsense.rule:
         description: "{{ item }}"
@@ -125,6 +133,7 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_1_10'
         - 'ANSIBLE_TEST_1_11'
+        - 'ANSIBLE_TEST_1_12'
 
 - name: Testing Rules - aliases
   hosts: localhost
@@ -158,15 +167,13 @@
         description: 'ANSIBLE_TEST_1_3'
         action: 'block'
 
-    - name: Adding rule using alias-port (not supported)
+    - name: Adding rule using alias-port
       ansibleguy.opnsense.rule:
         source_net: '192.168.0.0/24'
         destination_net: '192.168.1.0/24'
         destination_port: 'ANSIBLE_TEST_3_2'
         protocol: 'TCP'
         description: 'ANSIBLE_TEST_1_4'
-      register: opn5
-      failed_when: not opn5.failed
 
     - name: Cleanup rules
       ansibleguy.opnsense.rule:

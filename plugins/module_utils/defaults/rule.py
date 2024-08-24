@@ -94,7 +94,7 @@ RULE_MOD_ARGS = dict(
     ),
     source_port=dict(
         type='str', required=False, default=RULE_DEFAULTS['source_port'], aliases=RULE_MOD_ARG_ALIASES['source_port'],
-        description='Leave empty to allow all, alias not supported'
+        description='Leave empty to allow all, valid port-number, name, alias or range'
     ),
     destination_invert=dict(
         type='bool', required=False, default=RULE_DEFAULTS['destination_invert'],
@@ -107,7 +107,7 @@ RULE_MOD_ARGS = dict(
     destination_port=dict(
         type='str', required=False, default=RULE_DEFAULTS['destination_port'],
         aliases=RULE_MOD_ARG_ALIASES['destination_port'],
-        description='Leave empty to allow all, alias not supported'
+        description='Leave empty to allow all, valid port-number, name, alias or range'
     ),
     gateway=dict(
         type='str', required=False, default=RULE_DEFAULTS['gateway'],

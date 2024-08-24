@@ -19,10 +19,9 @@ Limitations
 
 This plugin has some limitations you need to know of:
 
-* ports don't support aliases
 * each of these parameters only takes ONE value per rule:
 
-  * port
+  * port (*port-number, name, alias or range*)
   * protocol (*or 'any'; 'TCP/UDP' is NOT valid*)
   * ip-protocol (*IPv4/IPv6*)
   * direction
@@ -73,10 +72,10 @@ Definition
     "protocol","string","false","'any'","p, proto","Protocol like 'TCP', 'UDP', 'ICMP' and so on. For options see the WEB-UI. 'TCP/UDP' is NOT valid!"
     "source_invert","boolean","false","false","si, src_inv, src_not","Inverted matching of the source"
     "source_net","string","false","'any'","s, src, source","Host, network, alias or 'any'"
-    "source_port","string","false","\-","sp, src_port","Leave empty to allow all, alias not supported"
+    "source_port","string","false","\-","sp, src_port","Leave empty to allow all, valid port-number, name, alias or range"
     "destination_invert","boolean","false","false","di, dest_inv, dest_not","Inverted matching of the destination"
     "destination_net","string","false","'any'","d, dest, destination","Host, network, alias or 'any'"
-    "destination_port","string","false","\-","dp, dest_port","Leave empty to allow all, alias not supported"
+    "destination_port","string","false","\-","dp, dest_port","Leave empty to allow all, valid port-number, name, alias or range"
     "gateway","string","false","\-","g, gw","Existing gateway to use"
     "log","boolean","false","true","l","If rule matches should be shown in the firewall logs"
     "description","string","false","\-","desc","Description for the rule"
