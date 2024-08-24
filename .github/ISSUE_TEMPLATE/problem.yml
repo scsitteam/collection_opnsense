@@ -47,7 +47,7 @@ body:
         > Command: `ansible --version`
       render: bash
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: version-opnsense
@@ -89,7 +89,7 @@ body:
         Please provide as the configuration you used when the error occurred!
       render: yaml
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: config-opnsense
@@ -109,7 +109,7 @@ body:
         Set the [debug option](https://opnsense.ansibleguy.net/en/latest/usage/3_troubleshoot.html#verbose-output) and copy its output.
       render: bash
     validations:
-      required: true
+      required: false
 
   - type: textarea
     id: output-profiling
