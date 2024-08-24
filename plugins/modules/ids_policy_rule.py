@@ -16,7 +16,6 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.ids_policy_rule import Rule
-    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import diff_remove_empty
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
