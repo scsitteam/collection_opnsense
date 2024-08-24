@@ -14,17 +14,6 @@ Rule
 
 **Service Docs**: `Rules <https://docs.opnsense.org/manual/firewall.html#rules.html>`_
 
-Prerequisites
-*************
-
-You need to install the following plugin as OPNSense has no core-api for managing its firewall rules:
-
-.. code-block:: bash
-
-    os-firewall
-
-You can also install it using the :ref:`ansibleguy.opnsense.package <modules_package>` module.
-
 Limitations
 ***********
 
