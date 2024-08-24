@@ -94,6 +94,8 @@ class Server(BaseModule):
         self.p['role'] = 'server'
 
         if self.p['state'] == 'present':
+            self.p['mode'] = self.p['mode'].upper()
+
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 
             if is_unset(self.p['server_ip4']) and is_unset(self.p['server_ip6']):
@@ -134,4 +136,9 @@ class Server(BaseModule):
             )
 
         if self.p['state'] == 'present':
+            if 'before' in self.r['diff'] and 'mode' in self.r['diff']['before']:
+                self.r['diff']['before']['mode'] = self.r['diff']['before']['mode'].lower()
+                self.instance['mode'] = self.r['diff']['before']['mode']
+
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
+            self.r['changed'] = self.r['diff']['before'] != self.r['diff']['after']

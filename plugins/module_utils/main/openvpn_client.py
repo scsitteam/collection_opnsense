@@ -83,7 +83,6 @@ class Client(BaseModule):
                     "You need to either provide a 'certificate' or 'ca' to create an openvpn-client!"
                 )
 
-
         self._base_check()
 
         if not is_unset(self.p['ca']):
@@ -105,4 +104,10 @@ class Client(BaseModule):
             )
 
         if self.p['state'] == 'present':
+            if 'before' in self.r['diff'] and 'mode' in self.r['diff']['before']:
+                self.r['diff']['before']['mode'] = self.r['diff']['before']['mode'].lower()
+                self.instance['mode'] = self.r['diff']['before']['mode']
+
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
+            self.r['changed'] = self.r['diff']['before'] != self.r['diff']['after']
+

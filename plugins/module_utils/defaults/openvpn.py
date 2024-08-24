@@ -84,7 +84,7 @@ OPENVPN_INSTANCE_MOD_ARGS = dict(
         description='Various less frequently used yes/no options which can be set for this instance.',
         choices=[
             'client-to-client', 'duplicate-cn', 'passtos', 'persist-remote-ip', 'route-nopull', 'route-noexec',
-            'remote-random',
+            'remote-random', 'float',
         ],
     ),
     mtu=dict(
