@@ -61,7 +61,9 @@ def run_module():
         ),
         monitor=dict(
             type='str', required=False,
-            description='Enter an alternative address here to be used to monitor the link. This is used for the quality RRD graphs as well as the load balancer entries. Use this if the gateway does not respond to ICMP echo requests (pings).'
+            description='Enter an alternative address here to be used to monitor the link. '
+                        'This is used for the quality RRD graphs as well as the load balancer entries. '
+                        'Use this if the gateway does not respond to ICMP echo requests (pings).'
         ),
         force_down=dict(
             type='bool', required=False, aliases=['down'],
@@ -70,12 +72,14 @@ def run_module():
         ),
         priority=dict(
             type='int', required=False, aliases=['prio'],
-            description='Choose a value between 1 and 255. Influences sort order when selecting a (default) gateway, lower means more important. Default is 255.',
+            description='Choose a value between 1 and 255. Influences sort order when selecting a (default) gateway, '
+                        'lower means more important. Default is 255.',
             default=255
         ),
         weight=dict(
             type='int', required=False,
-            description='Weight for this gateway when used in a gateway group. Specificed as an integer number between 1 and 5. Default equals 1.',
+            description='Weight for this gateway when used in a gateway group. '
+                        'Specificed as an integer number between 1 and 5. Default equals 1.',
             default=1
         ),
         latency_low=dict(
@@ -110,7 +114,8 @@ def run_module():
         ),
         loss_interval=dict(
             type='int', required=False,
-            description='Time interval before packets are treated as lost. Default is 4 (four times the probe interval).',
+            description='Time interval before packets are treated as lost. '
+                        'Default is 4 (four times the probe interval).',
             default=4
         ),
         data_length=dict(
