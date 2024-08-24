@@ -127,7 +127,7 @@
         opn9.failed or
         opn9.changed
 
-    - name: Fail on client-side validation
+    - name: Fail on server-side validation
       ansibleguy.opnsense.rule_multi:
         rules:
           ANSIBLE_TEST_2_1:
@@ -136,18 +136,30 @@
           ANSIBLE_TEST_2_3:
       register: opn6
       failed_when: not opn6.failed
+      when: not ansible_check_mode
 
-    - name: Don't fail on client-side validation
-      ansibleguy.opnsense.rule_multi:
-        rules:
-          ANSIBLE_TEST_2_1:
-          ANSIBLE_TEST_2_2:
-            destination_port: 'XXX'
-          ANSIBLE_TEST_2_3:
-        fail_verification: false
-      register: opn7
-      failed_when: opn7.failed
-      when: ansible_check_mode  # else the server-side will reject it
+    # noting to validate..
+    # - name: Fail on client-side validation
+    #   ansibleguy.opnsense.rule_multi:
+    #     rules:
+    #       ANSIBLE_TEST_2_1:
+    #       ANSIBLE_TEST_2_2:
+    #         destination_port: 'XXX'
+    #       ANSIBLE_TEST_2_3:
+    #   register: opn6
+    #   failed_when: not opn6.failed
+    #
+    # - name: Don't fail on client-side validation
+    #   ansibleguy.opnsense.rule_multi:
+    #     rules:
+    #       ANSIBLE_TEST_2_1:
+    #       ANSIBLE_TEST_2_2:
+    #         destination_port: 'XXX'
+    #       ANSIBLE_TEST_2_3:
+    #     fail_verification: false
+    #   register: opn7
+    #   failed_when: opn7.failed
+    #   when: ansible_check_mode  # else the server-side will reject it
 
     - name: Listing rules
       ansibleguy.opnsense.list:
