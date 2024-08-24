@@ -1,7 +1,7 @@
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.main import \
-    get_matching, validate_port
+    get_matching
 
 
 def validate_values(error_func, module: AnsibleModule, cnf: dict) -> None:

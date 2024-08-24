@@ -110,4 +110,3 @@ class Client(BaseModule):
 
             self.r['diff']['after'] = self.b.build_diff(data=self.p)
             self.r['changed'] = self.r['diff']['before'] != self.r['diff']['after']
-
