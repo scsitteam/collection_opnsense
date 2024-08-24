@@ -35,3 +35,4 @@
         - 'bind'
         - 'ids'
         - 'openvpn'
+        - 'gateway'
