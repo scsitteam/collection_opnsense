@@ -63,6 +63,7 @@ run_test 'rule_purge' 0
 run_test 'savepoint' 1
 run_test 'cron' 1
 run_test 'route' 1
+run_test 'gateway' 1
 run_test 'unbound_general' 1
 run_test 'unbound_acl' 1
 run_test 'unbound_dot' 1
