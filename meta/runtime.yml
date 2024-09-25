@@ -119,6 +119,9 @@ action_groups:
     - ansibleguy.opnsense.openvpn_client_override
     - ansibleguy.opnsense.openvpn_client_template
     - ansibleguy.opnsense.openvpn_client_export
+  dhcrelay:
+    - ansibleguy.opnsense.dhcrelay_destination
+    - ansibleguy.opnsense.dhcrelay_relay
   all:
     - metadata:
         extend_group:
@@ -140,6 +143,7 @@ action_groups:
           - ansibleguy.opnsense.system
           - ansibleguy.opnsense.ids
           - ansibleguy.opnsense.openvpn
+          - ansibleguy.opnsense.dhcrelay
 
 plugin_routing:
   modules:
