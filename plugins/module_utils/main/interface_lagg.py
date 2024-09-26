@@ -8,6 +8,7 @@ from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.cls impor
 
 
 class Lagg(BaseModule):
+    FIELD_ID = 'device'
     CMDS = {
         'add': 'addItem',
         'del': 'delItem',
@@ -19,7 +20,7 @@ class Lagg(BaseModule):
     API_CONT = 'lagg_settings'
     API_CMD_REL = 'reconfigure'
     FIELDS_CHANGE = ['members', 'primary_member', 'proto', 'lacp_fast_timeout', 'use_flowid', 'lagghash', 'lacp_strict', 'mtu', 'description']
-    FIELDS_ALL = ['device']
+    FIELDS_ALL = [FIELD_ID]
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_TRANSLATE = {
         'device': 'laggif',
@@ -43,7 +44,8 @@ class Lagg(BaseModule):
         if self.p['state'] == 'present':
             if is_unset(self.p['members']):
                 self.m.fail_json("You need to provide a list of 'members' to create a lagg!")
-
+            if is_unset(self.p['lagghash']):
+                self.m.fail_json("You need to provide a list of 'lagghash' to create a lagg!")
 
             validate_int_fields(module=self.m, data=self.p, field_minmax=self.INT_VALIDATIONS)
 

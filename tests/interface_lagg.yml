@@ -12,6 +12,9 @@
     ansibleguy.opnsense.list:
       target: 'interface_lagg'
 
+  vars:
+    if_lag: "{{ lookup('ansible.builtin.env', 'TEST_FINTERFACE_LAGG_IF') | default('lan', true) }}"
+
   tasks:
     - name: Listing
       ansibleguy.opnsense.list:
@@ -22,8 +25,7 @@
 
     - name: Removing - does not exist
       ansibleguy.opnsense.interface_lagg:
-        members:
-          - ansibletest11
+        device: 'lagg99'
         state: 'absent'
       register: opn_pre2
       failed_when: >
@@ -32,27 +34,32 @@
 
     - name: Adding 1 - failing because of invalid interface (server-side)
       ansibleguy.opnsense.interface_lagg:
+        device: 'lagg0'
         members:
-          - lan
+          - 'DOES-NOT-EXIST'
       register: opn_fail1
       failed_when: not opn_fail1.failed
       when: not ansible_check_mode
 
     - name: Adding 1
       ansibleguy.opnsense.interface_lagg:
+        device: 'lagg0'
         description: 'ANSIBLE_TEST_1_1'
         members:
-          - 'vtnet0'
+          - '{{ if_lag }}'
+        lagghash: l2
       register: opn1
       failed_when: >
         opn1.failed or
         not opn1.changed
 
     - name: Adding 1 - nothing changed
-      ansibleguy.opnsense.interface_vlan:
+      ansibleguy.opnsense.interface_lagg:
+        device: 'lagg0'
         description: 'ANSIBLE_TEST_1_1'
         members:
-          - 'vtnet0'
+          - '{{ if_lag }}'
+        lagghash: l2
       register: opn2
       failed_when: >
         opn2.failed or
@@ -64,13 +71,12 @@
       register: opn3
       failed_when: >
         'data' not in opn3 or
-        opn3.data | length != 1
+        opn3.data | length != 4
       when: not ansible_check_mode
 
     - name: Removing 2
       ansibleguy.opnsense.interface_lagg:
-        members:
-          - 'vtnet0'
+        device: 'lagg0'
         state: 'absent'
       register: opn4
       failed_when: >
