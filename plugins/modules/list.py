@@ -25,8 +25,8 @@ except MODULE_EXCEPTIONS:
 TARGETS = [
     'alias', 'rule', 'rule_interface_group', 'route', 'gateway', 'syslog', 'package', 'unbound_host', 'unbound_domain',
     'frr_ospf_general', 'frr_ospf3_general', 'unbound_forward', 'shaper_pipe', 'shaper_queue', 'shaper_rule',
-    'monit_service', 'monit_test', 'monit_alert', 'wireguard_server', 'bind_domain', 'wireguard_peer', 'interface_lagg',
-    'interface_vlan', 'unbound_host_alias', 'interface_vxlan', 'frr_bfd_neighbor', 'frr_bgp_general', 'frr_bgp_neighbor',
+    'monit_service', 'monit_test', 'monit_alert', 'wireguard_server', 'bind_domain', 'wireguard_peer', 'interface_vlan',
+    'unbound_host_alias', 'interface_vxlan', 'frr_bfd_neighbor', 'frr_bgp_general', 'frr_bgp_neighbor',
     'frr_ospf3_interface', 'frr_ospf_interface', 'bind_acl', 'frr_ospf_network', 'frr_rip', 'bind_general',
     'bind_blocklist', 'bind_record', 'interface_vip', 'webproxy_general', 'webproxy_cache', 'webproxy_parent',
     'webproxy_traffic', 'webproxy_remote_acl', 'webproxy_pac_proxy', 'webproxy_pac_match', 'webproxy_pac_rule',
@@ -35,7 +35,7 @@ TARGETS = [
     'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'nginx_upstream_server', 'ipsec_connection', 'ipsec_pool',
     'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general', 'unbound_general',
     'unbound_acl', 'ids_general', 'ids_policy', 'ids_rule', 'ids_ruleset', 'ids_user_rule', 'ids_policy_rule',
-    'openvpn_instance', 'openvpn_static_key', 'openvpn_client_override',
+    'openvpn_instance', 'openvpn_static_key', 'openvpn_client_override', 'interface_lagg',
 ]
 
 
