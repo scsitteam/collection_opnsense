@@ -11,6 +11,9 @@
     ansibleguy.opnsense.list:
       target: 'dhcrelay_relay'
 
+  vars:
+    if_dhcrelay: "{{ lookup('ansible.builtin.env', 'TEST_DHCRELAY_IF') | default('lan', true) }}"
+
   tasks:
     - name: Listing
       ansibleguy.opnsense.list:
@@ -32,7 +35,7 @@
     - name: Adding - failing because of invalid interface
       ansibleguy.opnsense.dhcrelay_relay:
         interface: 'DOESNOTEXIST'
-        server: 'mydhcp'
+        server: 'ANSIBLE_TEST_1_1'
         reload: false
       register: opn_fail1
       failed_when: not opn_fail1.failed
@@ -40,7 +43,7 @@
 
     - name: Adding - failing because of invalid destination
       ansibleguy.opnsense.dhcrelay_relay:
-        interface: 'lan'
+        interface: '{{ if_dhcrelay }}'
         destination: 'DOESNOTEXIST'
         reload: false
       register: opn_fail2
@@ -49,7 +52,7 @@
 
     - name: Adding destination
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'mydhcp'
+        name: 'ANSIBLE_TEST_1_1'
         server:
           - '192.168.254.254'
         reload: false  # speed
@@ -57,8 +60,8 @@
 
     - name: Adding 1
       ansibleguy.opnsense.dhcrelay_relay:
-        interface: 'lan'
-        destination: 'mydhcp'
+        interface: '{{ if_dhcrelay }}'
+        destination: 'ANSIBLE_TEST_1_1'
         reload: false  # speed
       register: opn3
       failed_when: >
@@ -67,10 +70,9 @@
 
     - name: Adding 1 - nothing changed
       ansibleguy.opnsense.dhcrelay_relay:
-        interface: 'lan'
-        destination: 'mydhcp'
+        interface: '{{ if_dhcrelay }}'
+        destination: 'ANSIBLE_TEST_1_1'
         reload: false  # speed
-        debug: true
       register: opn4
       failed_when: >
         opn4.failed or
@@ -79,8 +81,8 @@
 
     - name: Enabling 1
       ansibleguy.opnsense.dhcrelay_relay:
-        interface: 'lan'
-        destination: 'mydhcp'
+        interface: '{{ if_dhcrelay }}'
+        destination: 'ANSIBLE_TEST_1_1'
         enabled: true
         reload: false  # speed
       register: opn5
@@ -91,8 +93,8 @@
 
     - name: Enabling 1 - nothing changed
       ansibleguy.opnsense.dhcrelay_relay:
-        interface: 'lan'
-        destination: 'mydhcp'
+        interface: '{{ if_dhcrelay }}'
+        destination: 'ANSIBLE_TEST_1_1'
         enabled: true
         reload: false  # speed
       register: opn6
@@ -111,7 +113,7 @@
 
     - name: Removing
       ansibleguy.opnsense.dhcrelay_relay:
-        interface: 'lan'
+        interface: '{{ if_dhcrelay }}'
         state: 'absent'
         reload: false  # speed
       when: not ansible_check_mode
@@ -123,7 +125,7 @@
 
     - name: Cleanup destination
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'mydhcp'
+        name: 'ANSIBLE_TEST_1_1'
         state: 'absent'
         reload: false  # speed
       when: not ansible_check_mode

@@ -24,7 +24,7 @@
 
     - name: Removing - does not exist
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'mydhcp'
+        name: 'ANSIBLE_TEST_1_1'
         state: 'absent'
         reload: false
       register: opn2
@@ -34,7 +34,7 @@
 
     - name: Adding - failing because of invalid values
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'mydhcp'
+        name: 'ANSIBLE_TEST_1_1'
         server: '{{ item }}'
         reload: false
       register: opn_fail1
@@ -46,7 +46,7 @@
 
     - name: Adding 1
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'mydhcp'
+        name: 'ANSIBLE_TEST_1_1'
         server:
           - '192.168.254.254'
         reload: false  # speed
@@ -57,7 +57,7 @@
 
     - name: Adding 2
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'myotherdhcp'
+        name: 'ANSIBLE_TEST_1_2'
         server:
           - '192.168.254.252'
           - '192.168.254.253'
@@ -69,7 +69,7 @@
 
     - name: Adding 2 - nothing changed
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'myotherdhcp'
+        name: 'ANSIBLE_TEST_1_2'
         server:
           - '192.168.254.252'
           - '192.168.254.253'
@@ -82,7 +82,7 @@
 
     - name: Removing 2
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'myotherdhcp'
+        name: 'ANSIBLE_TEST_1_2'
         state: 'absent'
         reload: false  # speed
       register: opn6
@@ -101,7 +101,7 @@
 
     - name: Cleanup
       ansibleguy.opnsense.dhcrelay_destination:
-        name: 'mydhcp'
+        name: 'ANSIBLE_TEST_1_1'
         state: 'absent'
         reload: false  # speed
       when: not ansible_check_mode
