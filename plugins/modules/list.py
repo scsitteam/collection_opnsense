@@ -35,7 +35,7 @@ TARGETS = [
     'webproxy_acl', 'webproxy_icap', 'webproxy_auth', 'nginx_upstream_server', 'ipsec_connection', 'ipsec_pool',
     'ipsec_child', 'ipsec_vti', 'ipsec_auth_local', 'ipsec_auth_remote', 'frr_general', 'unbound_general',
     'unbound_acl', 'ids_general', 'ids_policy', 'ids_rule', 'ids_ruleset', 'ids_user_rule', 'ids_policy_rule',
-    'openvpn_instance', 'openvpn_static_key', 'openvpn_client_override', 'interface_lagg',
+    'openvpn_instance', 'openvpn_static_key', 'openvpn_client_override', 'interface_lagg', 'category',
 ]
 
 
@@ -381,6 +381,10 @@ def run_module():
         elif target == 'openvpn_client_override':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.openvpn_client_override import \
                 Override as Target_Obj
+
+        elif target == 'category':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.category import \
+                Category as Target_Obj
 
     except AttributeError:
         module_dependency_error()

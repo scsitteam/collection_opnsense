@@ -121,6 +121,7 @@ action_groups:
     - ansibleguy.opnsense.openvpn_client_template
     - ansibleguy.opnsense.openvpn_client_export
   all:
+    - ansibleguy.opnsense.category
     - metadata:
         extend_group:
           - ansibleguy.opnsense.alias
