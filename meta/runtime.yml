@@ -185,3 +185,7 @@ plugin_routing:
       redirect: ansibleguy.opnsense.gateway
     rule_if_group:
       redirect: ansibleguy.opnsense.rule_interface_group
+    dhcrelay:
+      redirect: ansibleguy.opnsense.dhcrelay_relay
+    dhcrelay_dst:
+      redirect: ansibleguy.opnsense.dhcrelay_destination

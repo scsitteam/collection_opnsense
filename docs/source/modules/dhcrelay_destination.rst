@@ -33,6 +33,7 @@ Info
 
 This module manages DHCRelay destinations. A destination can contain multiple IP addresses.
 
+Note: You can also use the shortform module name: :code:`ansibleguy.opnsense.dhcrelay_dst`
 
 Examples
 ********

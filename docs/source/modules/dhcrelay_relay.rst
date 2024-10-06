@@ -35,6 +35,7 @@ Info
 
 This module manages DHCRelay relays. Each interface can be assigned a single relay.
 
+Note: You can also use the shortform module name: :code:`ansibleguy.opnsense.dhcrelay`
 
 Examples
 ********
