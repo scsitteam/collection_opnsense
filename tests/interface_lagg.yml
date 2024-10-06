@@ -13,7 +13,8 @@
       target: 'interface_lagg'
 
   vars:
-    if_lag: "{{ lookup('ansible.builtin.env', 'TEST_FINTERFACE_LAGG_IF') | default('lan', true) }}"
+    if_lag: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL_LAGG_IF') | default('vtnet2', true) }}"
+    if_lag_ctn: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL_LAGG_CNT') | default('1', true) }}"
 
   tasks:
     - name: Listing

@@ -28,6 +28,8 @@ Some tests benefit from having a second network-interface available.
 
 You need to add a `opt1` dummy-interface named `TEST`. The assigned IPs do not matter.
 
+Add another interface and leave it unassigned (`vtnet2`).
+
 ### Internet access
 
 To perform some tests (system, ids) the test firewall needs to reach some public service:
@@ -54,6 +56,14 @@ You can provide your GW IPs via env-vars: `TEST_FIREWALL_GW1` and `TEST_FIREWALL
 The gateway tests will not work correctly if the LAN interface mismatches.
 
 You can provide your GW lan-if via env-vars: `TEST_FIREWALL_RULE_GRP_IF`
+
+### LAGG Interfaces
+
+The LAGG tests will not work correctly if the unassigned interface mismatches.
+
+You can provide your if via env-vars: `TEST_FIREWALL_LAGG_IF`
+
+And the count of existing LAGGs via `TEST_FIREWALL_LAGG_CNT`
 
 ----
 
