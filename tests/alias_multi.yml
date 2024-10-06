@@ -151,7 +151,6 @@
               - '::f00d'
             interface: 'lan'
         reload: false  # geoip and urltable take LONG time
-        debug: true
       register: opn6
       failed_when: >
         opn6.failed or
