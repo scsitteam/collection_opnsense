@@ -22,6 +22,7 @@ class Base:
     ATTR_AK_PATH_REQ = 'API_KEY_PATH_REQ'  # if a custom path depth is needed
     ATTR_AK_PATH_GET = 'API_KEY_PATH_GET'  # if 'get' needs custom path
     ATTR_GET_ADD = 'SEARCH_ADDITIONAL'  # extract additional data from search-call
+    ATTR_GET_DETAIL_ALL = 'SEARCH_DETAIL_ALL'
     ATTR_AK_PATH_SPLIT_CHAR = '.'
     ATTR_BOOL_INVERT = 'FIELDS_BOOL_INVERT'
     ATTR_TRANSLATE = 'FIELDS_TRANSLATE'
@@ -84,19 +85,20 @@ class Base:
             # if we can - we only perform the 'detail' call for the already matched entry to save on needed requests
             base_match_fields = False
             base_match_fields_checked = False
+            force_details = False if not hasattr(self.i, self.ATTR_GET_DETAIL_ALL) else getattr(self.i, self.ATTR_GET_DETAIL_ALL)
 
             for base_entry in self._api_post({
                 **self.i.call_cnf,
                 'command': self.i.CMDS['search'],
                 'data': {'current': 1, 'rowCount': self.QUERY_MAX_ENTRIES},
             })['rows']:
-                if match_fields is not None and not base_match_fields_checked:
+                if not force_details and match_fields is not None and not base_match_fields_checked:
                     base_match_fields_checked = True
                     base_match_fields = all(field in base_entry for field in match_fields)
 
                 # todo: perform async calls for parallel data fetching
                 detail_entry = {}
-                if not base_match_fields or \
+                if force_details or not base_match_fields or \
                         all(base_entry[field] == self.i.p[field] for field in match_fields):
                     detail_entry = self._search_path_handling(
                         self._api_get({
