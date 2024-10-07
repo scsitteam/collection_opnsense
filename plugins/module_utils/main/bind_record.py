@@ -62,8 +62,6 @@ class Record(BaseModule):
                     self.m.fail_json(f"Value '{self.p['value']}' is not a valid IPv4-address!")
                 elif self.p['type'] == 'AAAA' and not is_ip6(self.p['value']):
                     self.m.fail_json(f"Value '{self.p['value']}' is not a valid IPv6-address!")
-                elif self.p['type'] == 'MX' and not valid_hostname(self.p['value']):
-                    self.m.fail_json(f"Value '{self.p['value']}' is not a valid hostname!")
 
         # custom matching as dns round-robin allows for multiple records to match..
         if self.existing_entries is None:
