@@ -39,6 +39,12 @@ ansibleguy.opnsense.interface_vip
 This module manages VIP configuration that can be found in the WEB-UI menu: 'Interfaces - Virtual IPs - Settings'
 
 
+ansibleguy.opnsense.interface_lagg
+===================================
+
+This module manages LAGG configuration that can be found in the WEB-UI menu: 'Interfaces - Other Types - LAGG'
+
+
 Definition
 **********
 
@@ -92,6 +98,31 @@ ansibleguy.opnsense.interface_vip
     "advertising_base", "integer", "false", "1", "adv_base, base", "The frequency that this machine will advertise. 0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master"
     "advertising_skew", "integer", "false", "0", "adv_skew, skew", "\-"
     "description","string","false","\-","desc, name","Optional description"
+    "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
+
+
+ansibleguy.opnsense.interface_lagg
+=================================
+
+.. warning::
+
+    This feature is only available in OPNSense version >= 23.7
+
+..  csv-table:: Definition
+    :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
+    :widths: 15 10 10 10 10 45
+
+    "match_fields","list","false","['members']","\-","Fields that are used to match configured LAGG with the running config - if any of those fields are changed, the module will think it's a new entry. At least one of: 'device', 'members', 'primary_member', 'proto', 'description'"
+    "device", "string", "false", "\-", "laggif", "Optional 'device' of the entry. Needs to start with 'lagg'"
+    "members", "list", "false", "\-", "port, int, if", "Existing LAGG capable interface - you must provide the network port as shown in 'Interfaces - Assignments - Network port'"
+    "primary_member", "string", "false", "\-", "\-", "This interface will be added first in the lagg making it the primary one - you must provide the network port as shown in 'Interfaces - Assignments - Network port'"
+    "proto", "string", "false", "lacp", "p", "The protocol to use. One of: 'none', 'lacp', 'failover', 'fec', 'loadbalance', 'roundrobin'"
+    "lacp_fast_timeout", "boolean", "false", "false", "\-", "Enable lacp fast-timeout on the interface."
+    "use_flowid", "string", "false", "\-", "\-", "Use the RSS hash from the network card if available, otherwise a hash is locally calculated. The default depends on the system tunable in net.link.lagg.default_use_flowid. One of: 'default', 'yes', 'no'"
+    "lagghash", "list", "false", "['l2']", "\-", "Set the packet layers to hash for aggregation protocols which load balance. At least one of: 'l2', 'l3', 'l4'"
+    "lacp_strict", "string", "false", "\-", "\-", "Enable lacp strict compliance on the interface. The default depends on the system tunable in net.link.lagg.lacp.default_strict_mode. One of: 'default', 'yes', 'no'"
+    "mtu", "integer", "false", "false", "\-", "If you leave this field blank, the smallest mtu of this laggs children will be used."
+    "description","string","true","\-","desc, name","The description used to match the configured entries to the existing ones"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -246,4 +277,57 @@ ansibleguy.opnsense.interface_vip
           ansibleguy.opnsense.interface_vip:
             interface: 'opt1'
             address: '192.168.0.100/24'
+            state: 'absent'
+
+ansibleguy.opnsense.interface_lagg
+=================================
+
+.. code-block:: yaml
+
+    - hosts: localhost
+      gather_facts: no
+      module_defaults:
+        group/ansibleguy.opnsense.all:
+          firewall: 'opnsense.template.ansibleguy.net'
+          api_credential_file: '/home/guy/.secret/opn.key'
+    
+        ansibleguy.opnsense.list:
+          target: 'interface_lagg'
+    
+      tasks:
+        - name: Example
+          ansibleguy.opnsense.interface_lagg:
+            # device: lagg0
+            # description: LACP ax0/1
+            members:
+              - ax0
+              - ax1
+            # primary_member: ax0
+            # proto: lacp
+            # lacp_fast_timeout: 'default'
+            # use_flowid: 'default'
+            # lagghash: ['l2']
+            # lacp_strict: 'default'
+            # mtu: 9000
+            # match_fields: ['members']
+    
+        - name: Adding LAGG
+          ansibleguy.opnsense.interface_lagg:
+            members:
+              - ax0
+              - ax1
+    
+        - name: Listing
+          ansibleguy.opnsense.list:
+          #  target: 'interface_lagg'
+          register: existing_entries
+    
+        - name: Printing LAGGs
+          ansible.builtin.debug:
+            var: existing_entries.data
+    
+        - name: Removing LAGG
+          ansibleguy.opnsense.interface_vip:
+            device: lagg0
+            match_fields: ['device']
             state: 'absent'

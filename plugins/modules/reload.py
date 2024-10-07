@@ -43,6 +43,7 @@ def run_module():
                 'interface_vlan',
                 'interface_vxlan',
                 'interface_vip',
+                'interface_lagg',
                 'frr',
                 'webproxy',
                 'bind',
@@ -132,6 +133,10 @@ def run_module():
         elif target == 'interface_vip':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_vip import \
                 Vip as Target_Obj
+
+        elif target == 'interface_lagg':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.interface_lagg import \
+                Lagg as Target_Obj
 
         elif target == 'frr':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.frr_bgp_general import \

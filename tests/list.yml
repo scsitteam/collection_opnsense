@@ -44,7 +44,7 @@
       ansibleguy.opnsense.list:
         target: "{{ item }}"
       when: not ansible_check_mode
-      loop: ['interface_vxlan', 'interface_vlan', 'interface_vip']
+      loop: ['interface_vxlan', 'interface_vlan', 'interface_vip', 'interface_lagg']
 
     - name: Querying config - WireGuard
       ansibleguy.opnsense.list:
