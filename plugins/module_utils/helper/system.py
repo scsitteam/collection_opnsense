@@ -50,6 +50,14 @@ def wait_for_response(module: AnsibleModule) -> bool:
     raise TimeoutError
 
 
+def get_upgrade_status(s: Session) -> dict:
+    return s.get({
+        'command': 'upgradestatus',
+        'module': 'core',
+        'controller': 'firmware',
+    })
+
+
 def wait_for_update(module: AnsibleModule, s: Session) -> bool:
     timeout = time() + module.params['wait_timeout']
 
@@ -65,11 +73,7 @@ def wait_for_update(module: AnsibleModule, s: Session) -> bool:
         poll_interval_start = time()
 
         try:
-            result = s.get({
-                'command': 'upgradestatus',
-                'module': 'core',
-                'controller': 'firmware',
-            })
+            result = get_upgrade_status(s)
             status = result['status']
 
             _wait_msg(module, f"Got response: {status}")

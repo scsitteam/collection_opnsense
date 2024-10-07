@@ -15,7 +15,7 @@ try:
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.base.api import Session
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.defaults.main import OPN_MOD_ARGS
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.system import wait_for_response, \
-        wait_for_update
+        wait_for_update, get_upgrade_status
 
 except MODULE_EXCEPTIONS:
     module_dependency_error()
@@ -59,6 +59,12 @@ def run_module():
 
     if not module.check_mode:
         with Session(module=module) as s:
+            upgrade_status = get_upgrade_status(s)
+            if upgrade_status['status'] != 'done':
+                module.fail_json(
+                    f'System may be upgrading! System-actions are currently blocked! Details: {upgrade_status}'
+                )
+
             s.post({
                 'command': module.params['action'],
                 'module': 'core',
