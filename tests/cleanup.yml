@@ -650,3 +650,15 @@
       ansibleguy.opnsense.rule_interface_group:
         name: 'ANSIBLE_TEST'
         state: 'absent'
+
+    - name: Cleanup dhcrelay
+      ansibleguy.opnsense.dhcrelay_relay:
+        interface: '{{ if_dhcrelay }}'
+        state: 'absent'
+      vars:
+        if_dhcrelay: "{{ lookup('ansible.builtin.env', 'TEST_DHCRELAY_IF') | default('lan', true) }}"
+
+    - name: Cleanup dhcrelay-destination
+      ansibleguy.opnsense.dhcrelay_destination:
+        name: 'ANSIBLE_TEST_1_1'
+        state: 'absent'

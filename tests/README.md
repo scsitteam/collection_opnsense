@@ -57,6 +57,13 @@ The gateway tests will not work correctly if the LAN interface mismatches.
 
 You can provide your GW lan-if via env-vars: `TEST_FIREWALL_RULE_GRP_IF`
 
+## DHCRelay
+
+The DHCRelay tests will not work correctly if the LAN interface mismatches.
+
+You can provide your lan-if via env-vars: `TEST_DHCRELAY_IF`
+
+=======
 ### LAGG Interfaces
 
 The LAGG tests will not work correctly if the unassigned interface mismatches.

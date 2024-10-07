@@ -49,6 +49,7 @@ def run_module():
                 'bind',
                 'ids',
                 'openvpn',
+                'dhcrelay',
             ],
             description='What part of the running config should be reloaded'
         ),
@@ -156,6 +157,10 @@ def run_module():
         elif target == 'openvpn':
             from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.openvpn_client import \
                 Client as Target_Obj
+
+        elif target == 'dhcrelay':
+            from ansible_collections.ansibleguy.opnsense.plugins.module_utils.main.dhcrelay_relay import \
+                DhcRelayRelay as Target_Obj
 
     except MODULE_EXCEPTIONS:
         module_dependency_error()

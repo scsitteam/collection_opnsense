@@ -36,4 +36,5 @@
         - 'bind'
         - 'ids'
         - 'openvpn'
+        - 'dhcrelay'
         # - 'gateway'  # issue 88
