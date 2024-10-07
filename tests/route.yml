@@ -47,6 +47,18 @@
         opn5.failed or
         not opn5.changed
 
+    - name: Adding 2 - nothing changed with match-fields network & gateway
+      ansibleguy.opnsense.route:
+        description: 'ANSIBLE_TEST_2'
+        network: '4.4.4.2/32'
+        gateway: 'LAN_GW'
+        match_fields: ['network', 'gateway']
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+      when: not ansible_check_mode
+
     - name: Disabling 1
       ansibleguy.opnsense.route:
         description: 'ANSIBLE_TEST_1'
