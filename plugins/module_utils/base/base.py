@@ -85,7 +85,8 @@ class Base:
             # if we can - we only perform the 'detail' call for the already matched entry to save on needed requests
             base_match_fields = False
             base_match_fields_checked = False
-            force_details = False if not hasattr(self.i, self.ATTR_GET_DETAIL_ALL) else getattr(self.i, self.ATTR_GET_DETAIL_ALL)
+            force_details = False if not hasattr(self.i, self.ATTR_GET_DETAIL_ALL) else \
+                getattr(self.i, self.ATTR_GET_DETAIL_ALL)
 
             for base_entry in self._api_post({
                 **self.i.call_cnf,
