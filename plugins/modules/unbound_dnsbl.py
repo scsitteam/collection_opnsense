@@ -49,11 +49,13 @@ def run_module():
         ),
         wildcards=dict(
             type='list', elements='str', required=False, default=[], aliases=['wildcard'],
-            description='List of wildcard domains to blocklist. All subdomains of the given domain will be blocked. Blocking first-level domains is not supported'
+            description='List of wildcard domains to blocklist. All subdomains of the given domain will be blocked. '
+                        'Blocking first-level domains is not supported'
         ),
         address=dict(
             type='str', required=False,
-            description='Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0). Not used when "Return NXDOMAIN" is checked'
+            description='Destination ip address for entries in the blocklist (leave empty to use default: 0.0.0.0). '
+                        'Not used when "Return NXDOMAIN" is checked'
         ),
         nxdomain=dict(
             type='bool', required=False, default=False,
