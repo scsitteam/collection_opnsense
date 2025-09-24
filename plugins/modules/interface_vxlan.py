@@ -80,6 +80,16 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        required_if=[
+            ('state', 'present', ('local',)),
+            ('state', 'present', ('remote', 'group'), True),
+        ],
+        required_by={
+            'group': ('interface',),
+        },
+        mutually_exclusive=(
+            ('remote', 'interface'),
+        )
     )
 
     module_wrapper(Vxlan(module=module, result=result))
