@@ -115,3 +115,21 @@ def test_filter_compiler_any(filter_spec, result):
     from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.filter import filter_compiler
 
     assert filter_compiler(filter_spec)(MOCK_OBJECT) == result
+
+
+@pytest.mark.parametrize('filter_spec, error_path', [
+    ({}, []),
+    ({'value': 'unknown', 'unknown': 'unknown'}, []),
+    ({'unknown': 'unknown'}, []),
+    ({'not': {'unknown': 'unknown'}}, ['not']),
+    ({'all': [{'value': 'yes'}, {'unknown': 'unknown'}]}, ['all']),
+    ({'any': [{'value': 'yes'}, {'unknown': 'unknown'}]}, ['any']),
+    ({'not': {'all': [{'any': [{'unknown': 'unknown'}]}]}}, ['not', 'all', 'any']),
+])
+def test_filter_compiler_compile_error(filter_spec, error_path):
+    from ansible_collections.ansibleguy.opnsense.plugins.module_utils.helper.filter import filter_compiler, FilterCompileError
+
+    with pytest.raises(FilterCompileError) as excinfo:
+        filter_compiler(filter_spec)
+    assert excinfo.value.path == error_path
+
