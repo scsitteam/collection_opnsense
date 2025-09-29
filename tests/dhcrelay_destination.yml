@@ -111,3 +111,104 @@
         'data' not in opn8 or
         opn8.data | length != 0
       when: not ansible_check_mode
+
+- name: Testing DHCRelay Destination - Multi
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.list:
+      target: 'dhcrelay_destination'
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn9
+      failed_when: >
+        'data' not in opn9 or
+        opn9.data | length != 0
+
+    - name: Removing - does not exist
+      oxlorg.opnsense.dhcrelay_destination:
+        multi_purge:
+          - name: 'ANSIBLE_TEST_2_1'
+          - name: 'ANSIBLE_TEST_2_2'
+        reload: false
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        opn10.changed
+
+    - name: Adding 1 + 2
+      oxlorg.opnsense.dhcrelay_destination:
+        dhcrelay_destinations:
+          - name: 'ANSIBLE_TEST_2_1'
+            server:
+              - '192.168.254.254'
+          - name: 'ANSIBLE_TEST_2_2'
+            server:
+              - '192.168.254.252'
+              - '192.168.254.253'
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        not opn11.changed
+
+    - name: Adding 1 + 2 - nothing changed
+      oxlorg.opnsense.dhcrelay_destination:
+        dhcrelay_destinations:
+          - name: 'ANSIBLE_TEST_2_1'
+            server:
+              - '192.168.254.254'
+          - name: 'ANSIBLE_TEST_2_2'
+            server:
+              - '192.168.254.252'
+              - '192.168.254.253'
+      register: opn12
+      failed_when: >
+        opn12.failed or
+        opn12.changed
+      when: not ansible_check_mode
+
+    - name: Keeping 1
+      oxlorg.opnsense.dhcrelay_destination:
+        dhcrelay_destinations:
+          - name: 'ANSIBLE_TEST_2_1'
+            server:
+              - '192.168.254.254'
+        multi_control:
+          purge_unconfigured: true
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        not opn13.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn14
+      failed_when: >
+        'data' not in opn14 or
+        opn14.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      oxlorg.opnsense.dhcrelay_destination:
+        multi_control:
+          purge_all: true
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn15
+      failed_when: >
+        'data' not in opn15 or
+        opn15.data | length != 0
+      when: not ansible_check_mode

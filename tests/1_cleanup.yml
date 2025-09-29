@@ -743,8 +743,8 @@
 
     - name: Cleanup dhcrelay-destination
       oxlorg.opnsense.dhcrelay_destination:
-        name: 'ANSIBLE_TEST_1_1'
-        state: 'absent'
+        multi_control:
+          purge_all: true
 
     - name: Cleanup DHCP-reservations
       oxlorg.opnsense.dhcp_reservation:
