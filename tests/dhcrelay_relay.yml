@@ -132,3 +132,144 @@
         'data' not in opn7 or
         opn7.data | length != 0
       when: not ansible_check_mode
+
+- name: Testing DHCRelay Relay - Mass Management
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.list:
+      target: 'dhcrelay_relay'
+
+  vars:
+    if_dhcrelay: "{{ lookup('ansible.builtin.env', 'TEST_DHCRELAY_IF') | default('lan', true) }}"
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 0
+
+    - name: Removing - does not exist
+      oxlorg.opnsense.dhcrelay_relay:
+        multi_purge:
+          - interface: 'DOESNOTEXIST'
+        reload: false
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        opn9.changed
+
+    - name: Adding - failing because of invalid interface
+      oxlorg.opnsense.dhcrelay_relay:
+        dhcrelay_relays:
+          - interface: 'DOESNOTEXIST'
+            server: 'ANSIBLE_TEST_2_1'
+        reload: false
+      register: opn_fail3
+      failed_when: not opn_fail3.failed
+      when: not ansible_check_mode
+
+    - name: Adding - failing because of invalid destination
+      oxlorg.opnsense.dhcrelay_relay:
+        dhcrelay_relays:
+          - interface: '{{ if_dhcrelay }}'
+            destination: 'DOESNOTEXIST'
+        reload: false
+      register: opn_fail4
+      failed_when: not opn_fail4.failed
+      when: not ansible_check_mode
+
+    - name: Adding destination
+      oxlorg.opnsense.dhcrelay_destination:
+        dhcrelay_destinations:
+          - name: 'ANSIBLE_TEST_2_1'
+            server:
+              - '192.168.254.254'
+      when: not ansible_check_mode
+
+    - name: Adding 1
+      oxlorg.opnsense.dhcrelay_relay:
+        dhcrelay_relays:
+          - interface: '{{ if_dhcrelay }}'
+            destination: 'ANSIBLE_TEST_2_1'
+      register: opn10
+      failed_when: >
+        opn10.failed or
+        not opn10.changed
+
+    - name: Adding 1 - nothing changed
+      oxlorg.opnsense.dhcrelay_relay:
+        dhcrelay_relays:
+          - interface: '{{ if_dhcrelay }}'
+            destination: 'ANSIBLE_TEST_2_1'
+      register: opn11
+      failed_when: >
+        opn11.failed or
+        opn11.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1
+      oxlorg.opnsense.dhcrelay_relay:
+        dhcrelay_relays:
+          - interface: '{{ if_dhcrelay }}'
+            destination: 'ANSIBLE_TEST_2_1'
+            enabled: true
+      register: opn12
+      failed_when: >
+        opn12.failed or
+        not opn12.changed
+      when: not ansible_check_mode
+
+    - name: Enabling 1 - nothing changed
+      oxlorg.opnsense.dhcrelay_relay:
+        dhcrelay_relays:
+          - interface: '{{ if_dhcrelay }}'
+            destination: 'ANSIBLE_TEST_2_1'
+            enabled: true
+      register: opn13
+      failed_when: >
+        opn13.failed or
+        opn13.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn14
+      failed_when: >
+        'data' not in opn14 or
+        opn14.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Removing
+      oxlorg.opnsense.dhcrelay_relay:
+        multi_purge:
+          - interface: '{{ if_dhcrelay }}'
+      register: opn15
+      failed_when: >
+        opn15.failed or
+        not opn15.changed
+      when: not ansible_check_mode
+
+    - name: Cleanup destination
+      oxlorg.opnsense.dhcrelay_destination:
+        multi_control:
+          purge_all: true
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn16
+      failed_when: >
+        'data' not in opn16 or
+        opn16.data | length != 0
+      when: not ansible_check_mode

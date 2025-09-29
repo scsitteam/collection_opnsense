@@ -33,8 +33,11 @@ class DhcRelayRelay(BaseModule):
         'existing_destinations': 'dhcrelay.destinations',
     }
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None, fail: dict = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail)
+    def __init__(
+            self, module: AnsibleModule, result: dict, multi: dict = None,
+            session: Session = None, fail: dict = None,
+    ):
+        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail, multi=multi)
         self.relay = {}
         self.existing_destinations = None
 
@@ -45,14 +48,9 @@ class DhcRelayRelay(BaseModule):
 
         self._base_check()
 
-        if not is_unset(self.p['destination']) and self.existing_destinations:
-            for key, values in self.existing_destinations.items():
-                if values['name'] == self.p['destination']:
-                    self.p['destination'] = key
-                    break
-
-    def get_existing(self) -> list:
-        existing = self.b.get_existing()
-        for relay in existing:
-            relay['destination'] = self.existing_destinations[relay['destination']]['name']
-        return existing
+        if self.p['state'] == 'present':
+            self.b.find_single_link(
+                field='destination',
+                existing=self.existing_destinations,
+                existing_field_id='name',
+            )
