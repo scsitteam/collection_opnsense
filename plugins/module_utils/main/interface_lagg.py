@@ -36,10 +36,21 @@ class Lagg(BaseModule):
     INT_VALIDATIONS = {
         'mtu': {'min': 576, 'max': 65535},
     }
+    FIELDS_VALUE_MAPPING = {
+        'use_flowid': {
+            'default': '',
+        },
+        'lacp_strict': {
+            'default': '',
+        },
+    }
     EXIST_ATTR = 'lagg'
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None, fail: dict = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail)
+    def __init__(
+            self, module: AnsibleModule, result: dict, multi: dict = None,
+            session: Session = None, fail: dict = None,
+    ):
+        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail, multi=multi)
         self.lagg = {}
 
     def check(self) -> None:

@@ -12,7 +12,10 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler impor
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import module_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import \
+        module_wrapper, is_multi_module_call, module_multi_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.multi import \
+        build_multi_mod_args
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_ONLY_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.interface_lagg import Lagg
@@ -26,7 +29,7 @@ except MODULE_EXCEPTIONS:
 
 
 def run_module():
-    module_args = dict(
+    entry_args = dict(
         device=dict(
             type='str', required=False, aliases=['laggif'],
             description="Optional 'device' of the entry. Needs to start with 'lagg'",
@@ -50,7 +53,7 @@ def run_module():
             description='Enable lacp fast-timeout on the interface.'
         ),
         use_flowid=dict(
-            type='str', required=False, choices=['yes', 'no'], aliases=['flowid'],
+            type='str', required=False, choices=['default', 'yes', 'no'], default='default', aliases=['flowid'],
             description='Use the RSS hash from the network card if available, otherwise a hash is locally calculated. '
                         'The default depends on the system tunable in net.link.lagg.default_use_flowid.'
         ),
@@ -60,8 +63,7 @@ def run_module():
             description='Set the packet layers to hash for aggregation protocols which load balance.'
         ),
         lacp_strict=dict(
-            type='str', required=False,
-            choices=['yes', 'no'],
+            type='str', required=False, choices=['default', 'yes', 'no'], default='default',
             description='Enable lacp strict compliance on the interface. The default depends on the '
                         'system tunable in net.link.lagg.lacp.default_strict_mode.',
         ),
@@ -70,8 +72,17 @@ def run_module():
             description='If you leave this field blank, the smallest mtu of this laggs children will be used.'
         ),
         description=dict(type='str', required=False, aliases=['desc', 'name']),
-        **RELOAD_MOD_ARG,
         **STATE_ONLY_MOD_ARG,
+    )
+    entry_multi_args = build_multi_mod_args(
+        mod_args=entry_args,
+        aliases=['interface_laggs', 'laggs'],
+    )
+
+    module_args = dict(
+        **entry_args,
+        **entry_multi_args,
+        **RELOAD_MOD_ARG,
         **OPN_MOD_ARGS,
     )
 
@@ -88,7 +99,17 @@ def run_module():
         supports_check_mode=True,
     )
 
-    module_wrapper(Lagg(module=module, result=result))
+    if is_multi_module_call(module):
+        module_multi_wrapper(
+            module=module,
+            result=result,
+            obj=Lagg,
+            kind='interface_lagg',
+            entry_args=entry_multi_args,
+        )
+
+    else:
+        module_wrapper(Lagg(module=module, result=result))
     module.exit_json(**result)
 
 

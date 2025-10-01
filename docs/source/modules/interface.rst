@@ -48,7 +48,7 @@ oxlorg.opnsense.interface_vip
 This module manages VIP configuration that can be found in the WEB-UI menu: 'Interfaces - Virtual IPs - Settings'
 
 oxlorg.opnsense.interface_lagg
-==================================
+==============================
 
 This module manages LAGG configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - LAGG'
 
@@ -146,7 +146,7 @@ oxlorg.opnsense.interface_vip
 
 
 oxlorg.opnsense.interface_lagg
-==================================
+==============================
 
 .. warning::
 
@@ -167,6 +167,7 @@ oxlorg.opnsense.interface_lagg
     "lacp_strict", "string", "false", "\-", "\-", "Enable lacp strict compliance on the interface. The default depends on the system tunable in net.link.lagg.lacp.default_strict_mode. One of: 'default', 'yes', 'no'"
     "mtu", "integer", "false", "false", "\-", "If you leave this field blank, the smallest mtu of this laggs children will be used."
     "description","string","true","\-","desc, name","The description used to match the configured entries to the existing ones"
+    "multi","dict","false","\-","interface_laggs, laggs", .. include:: ../_include/param_multi.rst
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_loopback
@@ -493,6 +494,35 @@ oxlorg.opnsense.interface_lagg
             # lagghash: ['l2']
             # lacp_strict: 'default'
             # mtu: 9000
+            # match_fields: ['members']
+
+        - name: Example - Mass Management
+          oxlorg.opnsense.interface_lagg:
+            interface_laggs:
+              - device: lagg0
+                # description: LACP ax0/1
+                members:
+                  - ax0
+                  - ax1
+                # primary_member: ax0
+                # proto: lacp
+                # lacp_fast_timeout: 'default'
+                # use_flowid: 'default'
+                # lagghash: ['l2']
+                # lacp_strict: 'default'
+                # mtu: 9000
+              - device: lagg1
+                # description: LACP ax2/3
+                members:
+                  - ax2
+                  - ax3
+                # primary_member: ax2
+                # proto: lacp
+                # lacp_fast_timeout: 'default'
+                # use_flowid: 'default'
+                # lagghash: ['l2']
+                # lacp_strict: 'default'
+                # mtu: 9000
             # match_fields: ['members']
     
         - name: Adding LAGG
