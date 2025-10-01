@@ -68,7 +68,7 @@ oxlorg.opnsense.interface_bridge
 This module manages Bridge configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - Bridge'
 
 oxlorg.opnsense.interface_gif
-=================================
+=============================
 
 This module manages GIF Tunnel configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - GIF'
 
@@ -226,7 +226,7 @@ oxlorg.opnsense.interface_bridge
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_gif
-=================================
+=============================
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
@@ -240,6 +240,7 @@ oxlorg.opnsense.interface_gif
     "tunnel_remote_net","integer","false","32","\-","Netmask `ipv4` or prefix `ipv6` to use for this tunnel "
     "ingress_filtering","boolean","false","true","filtering","Enable ingress filtering on outer tunnel"
     "ecn_friendly","boolean","false","false","ecn","Enable ECN friendly behavior this violates RFC2893"
+    "multi","dict","false","\-","interface_gifs, gifs", .. include:: ../_include/param_multi.rst
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 ----
@@ -770,7 +771,7 @@ oxlorg.opnsense.interface_bridge
             state: 'absent'
 
 oxlorg.opnsense.interface_gif
-=================================
+=============================
 
 .. code-block:: yaml
 
@@ -795,6 +796,29 @@ oxlorg.opnsense.interface_gif
             # tunnel_remote_net: 32
             # ingres_filtering: true
             # ecn_friendly: false
+            # debug: false
+            # state: 'present'
+            # reload: true
+
+        - name: Example - Mass Management
+          oxlorg.opnsense.interface_gif:
+            interface_gifs:
+              - description: 'MyGIFTunnel'
+                local: 'lan'
+                remote: '192.168.100.1'
+                tunnel_local: '10.0.0.1'
+                tunnel_remote: '10.0.0.2'
+                # tunnel_remote_net: 32
+                # ingres_filtering: true
+                # ecn_friendly: false
+              - description: 'MyGIFTunnel2'
+                local: 'lan'
+                remote: '192.168.200.1'
+                tunnel_local: '10.0.2.1'
+                tunnel_remote: '10.0.2.2'
+                # tunnel_remote_net: 32
+                # ingres_filtering: true
+                # ecn_friendly: false
             # debug: false
             # state: 'present'
             # reload: true

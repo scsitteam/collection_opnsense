@@ -2,6 +2,8 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
+    is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -44,6 +46,22 @@ class Gif(BaseModule):
     }
     EXIST_ATTR = 'gif'
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session)
+    def __init__(
+            self, module: AnsibleModule, result: dict, multi: dict = None,
+            session: Session = None, fail: dict = None,
+    ):
+        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail, multi=multi)
         self.gif = {}
+
+    def check(self) -> None:
+        if self.p['state'] == 'present':
+            if is_unset(self.p['local']):
+                self.m.fail_json("You need to provide an 'local' address or interface to create a gre tunnel!")
+            if is_unset(self.p['remote']):
+                self.m.fail_json("You need to provide an 'remote' address or interface to create a gre tunnel!")
+            if is_unset(self.p['tunnel_local']):
+                self.m.fail_json("You need to provide an 'tunnel_local' endpoint to create a gre tunnel!")
+            if is_unset(self.p['tunnel_remote']):
+                self.m.fail_json("You need to provide an 'tunnel_remote' endpoint to create a gre tunnel!")
+
+        self._base_check()
