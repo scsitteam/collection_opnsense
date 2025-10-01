@@ -33,7 +33,7 @@ Info
 ****
 
 oxlorg.opnsense.interface_vlan
-==================================
+==============================
 
 This module manages VLAN configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - VLAN'
 
@@ -100,6 +100,7 @@ oxlorg.opnsense.interface_vlan
     "priority","integer","false","0","prio","802.1Q VLAN PCP (between 0 and 7)"
     "protocol","str","false","\-","proto","Enforce protocol selection. 802.1Q is the default for VLAN interfaces, but 802.1ad is used when the parent is a VLAN. one of '802.1q' or '802.1ad'"
     "device","str","false","vlan0.<vlan>","vlanif","Optional 'device' of the entry. Needs to start with 'vlan0'"
+    "multi","dict","false","\-","interface_vlans, vlans", .. include:: ../_include/param_multi.rst
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -167,13 +168,14 @@ oxlorg.opnsense.interface_lagg
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_loopback
-======================================
+==================================
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
     :widths: 15 10 10 10 10 45
 
     "description","string","true","\-","desc, name","The unique description used to match the configured entries to the existing ones"
+    "multi","dict","false","\-","interface_loopbacks, loopbacks", .. include:: ../_include/param_multi.rst
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_gre
@@ -264,6 +266,25 @@ oxlorg.opnsense.interface_vlan
             # priority: 0
             # protocol:
             # device:
+            # debug: false
+            # state: 'present'
+            # reload: true
+
+        - name: Example - Mass Management
+          oxlorg.opnsense.interface_vlan:
+            interface_vlans:
+              - description: 'example'
+                interface: 'vtnet0'
+                vlan: 100
+                # priority: 0
+                # protocol:
+                # device:
+              - description: 'example2'
+                interface: 'vtnet0'
+                vlan: 101
+                # priority: 0
+                # protocol:
+                # device:
             # debug: false
             # state: 'present'
             # reload: true
@@ -446,7 +467,7 @@ oxlorg.opnsense.interface_lagg
             state: 'absent'
 
 oxlorg.opnsense.interface_loopback
-======================================
+==================================
 
 .. code-block:: yaml
 
@@ -464,6 +485,15 @@ oxlorg.opnsense.interface_loopback
         - name: Example
           oxlorg.opnsense.interface_loopback:
             description: 'MyLoopback'
+            # debug: false
+            # state: 'present'
+            # reload: true
+
+        - name: Example - Mass Management
+          oxlorg.opnsense.interface_loopback:
+            interface_loopbacks:
+              - description: 'MyLoopback'
+              - description: 'MyLoopback2'
             # debug: false
             # state: 'present'
             # reload: true

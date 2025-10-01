@@ -12,7 +12,10 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler impor
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import module_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import \
+        module_wrapper, is_multi_module_call, module_multi_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.multi import \
+        build_multi_mod_args
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_ONLY_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.interface_vlan import Vlan
@@ -26,7 +29,7 @@ except MODULE_EXCEPTIONS:
 
 
 def run_module():
-    module_args = dict(
+    entry_args = dict(
         device=dict(
             type='str', required=False, aliases=['vlanif'],
             description="Optional 'device' of the entry. Needs to start with 'vlan0'",
@@ -50,8 +53,18 @@ def run_module():
                         'but 802.1ad is used when the parent is a VLAN',
         ),
         description=dict(type='str', required=True, aliases=['desc', 'name']),
-        **RELOAD_MOD_ARG,
         **STATE_ONLY_MOD_ARG,
+    )
+    entry_multi_args = build_multi_mod_args(
+        mod_args=entry_args,
+        aliases=['interface_vlans', 'vlans'],
+        not_required=['description'],
+    )
+
+    module_args = dict(
+        **entry_args,
+        **entry_multi_args,
+        **RELOAD_MOD_ARG,
         **OPN_MOD_ARGS,
     )
 
@@ -66,9 +79,25 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        mutually_exclusive=[
+            ('description', 'multi'), ('description', 'multi_purge'), ('description', 'multi_control.purge_all')
+        ],
+        required_one_of=[
+            ('description', 'multi', 'multi_purge', 'multi_control.purge_all'),
+        ],
     )
 
-    module_wrapper(Vlan(module=module, result=result))
+    if is_multi_module_call(module):
+        module_multi_wrapper(
+            module=module,
+            result=result,
+            obj=Vlan,
+            kind='interface_vlan',
+            entry_args=entry_multi_args,
+        )
+
+    else:
+        module_wrapper(Vlan(module=module, result=result))
     module.exit_json(**result)
 
 

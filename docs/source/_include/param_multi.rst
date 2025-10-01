@@ -1,0 +1,1 @@
+This module support :ref:`Mass Management <modules_multi>`. Please refer to the Mass Management documentation for reference.
