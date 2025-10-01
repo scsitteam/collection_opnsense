@@ -63,7 +63,7 @@ oxlorg.opnsense.interface_gre
 This module manages GRE Tunnel configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - GRE'
 
 oxlorg.opnsense.interface_bridge
-====================================
+================================
 
 This module manages Bridge configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - Bridge'
 
@@ -198,7 +198,7 @@ oxlorg.opnsense.interface_gre
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_bridge
-====================================
+================================
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
@@ -207,7 +207,7 @@ oxlorg.opnsense.interface_bridge
     "description","string","true","\-","desc, name","The unique description used to match the configured entries to the existing ones"
     "members","list","false","\-","ports, ints","Interfaces participating in the bridge. - you must provide the network port as shown in 'Interfaces - Assignments - Network port"
     "link_local","boolean","false","false","\-","Enable link-local addresses on the interface"
-    "stp","boolean","false","false","\-","Enable spanning tree options for this bridge"
+    "stp_enabled","boolean","false","false","stp","Enable spanning tree options for this bridge"
     "stp_proto","string","false","rstp","\-","Protocol used for spanning tree. One of: 'rstp' or 'stp'"
     "stp_interfaces","list","false","\-","stp_ports, stp_ints","Interfaces to enable Spanning Tree Protocol on"
     "stp_max_age","integer","false","\-","\-","Time that a Spanning Tree Protocol configuration is valid"
@@ -222,6 +222,7 @@ oxlorg.opnsense.interface_bridge
     "auto_ptp_interfaces","list","false","\-","auto_ptp_ports, auto_ptp_ints","Automatically detect the point-to-point status on selected interfaces"
     "static_interfaces","list","false","\-","static_ports, static_ints, sticky_interfaces, sticky_ports, sticky_ints","Mark interfaces as a 'sticky' interface."
     "private_interfaces","list","false","\-","private_ports, private_ints","Mark interfaces as a 'private' interface"
+    "multi","dict","false","\-","interface_bridges, bridges", .. include:: ../_include/param_multi.rst
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_gif
@@ -667,7 +668,7 @@ oxlorg.opnsense.interface_gre
             state: 'absent'
 
 oxlorg.opnsense.interface_bridge
-====================================
+================================
 
 .. code-block:: yaml
 
@@ -702,6 +703,49 @@ oxlorg.opnsense.interface_bridge
             # auto_ptp_interfaces:
             # static_interfaces:
             # private_interfaces:
+            # debug: false
+            # state: 'present'
+            # reload: true
+
+        - name: Example - Mass Management
+          oxlorg.opnsense.interface_bridge:
+            interface_bridges:
+              - description: 'MyBridge'
+                members: 'lan'
+                # link_local: false
+                # stp: false
+                # stp_proto: rstp
+                # stp_interfaces:
+                # stp_max_age:
+                # stp_fwdelay:
+                # stp_hold:
+                # cache_size:
+                # cache_timeout:
+                # span_interfaces:
+                # edge_interfaces:
+                # auto_edge_interfaces:
+                # ptp_interfaces:
+                # auto_ptp_interfaces:
+                # static_interfaces:
+                # private_interfaces:
+              - description: 'MyBridge2'
+                members: 'lan'
+                # link_local: false
+                # stp: false
+                # stp_proto: rstp
+                # stp_interfaces:
+                # stp_max_age:
+                # stp_fwdelay:
+                # stp_hold:
+                # cache_size:
+                # cache_timeout:
+                # span_interfaces:
+                # edge_interfaces:
+                # auto_edge_interfaces:
+                # ptp_interfaces:
+                # auto_ptp_interfaces:
+                # static_interfaces:
+                # private_interfaces:
             # debug: false
             # state: 'present'
             # reload: true

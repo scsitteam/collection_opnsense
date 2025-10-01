@@ -2,6 +2,8 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.validate import \
+    is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -19,7 +21,7 @@ class Bridge(BaseModule):
     API_MOD = 'interfaces'
     API_CONT = 'bridge_settings'
     FIELDS_CHANGE = [
-        'members', 'link_local', 'stp', 'stp_proto', 'stp_interfaces', 'stp_max_age', 'stp_fwdelay', 'stp_hold',
+        'members', 'link_local', 'stp_enabled', 'stp_proto', 'stp_interfaces', 'stp_max_age', 'stp_fwdelay', 'stp_hold',
         'cache_size', 'cache_timeout', 'span_interfaces', 'edge_interfaces', 'auto_edge_interfaces',
         'ptp_interfaces', 'auto_ptp_interfaces', 'static_interfaces', 'private_interfaces',
     ]
@@ -28,7 +30,7 @@ class Bridge(BaseModule):
     FIELDS_TRANSLATE = {
         'description': 'descr',
         'link_local': 'linklocal',
-        'stp': 'enablestp',
+        'stp_enabled': 'enablestp',
         'stp_proto': 'proto',
         'stp_interfaces': 'stp',
         'stp_max_age': 'maxage',
@@ -45,7 +47,7 @@ class Bridge(BaseModule):
         'private_interfaces': 'private',
     }
     FIELDS_TYPING = {
-        'bool': ['link_local', 'stp'],
+        'bool': ['link_local', 'stp_enabled'],
         'list': [
             'members', 'stp_interfaces', 'span_interfaces', 'edge_interfaces', 'auto_edge_interfaces',
             'ptp_interfaces', 'auto_ptp_interfaces', 'static_interfaces', 'private_interfaces',
@@ -60,6 +62,16 @@ class Bridge(BaseModule):
     }
     EXIST_ATTR = 'bridge'
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session)
+    def __init__(
+            self, module: AnsibleModule, result: dict, multi: dict = None,
+            session: Session = None, fail: dict = None,
+    ):
+        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail, multi=multi)
         self.bridge = {}
+
+    def check(self) -> None:
+        if self.p['state'] == 'present':
+            if is_unset(self.p['members']):
+                self.m.fail_json("You need to provide 'members' to create a bridge!")
+
+        self._base_check()
