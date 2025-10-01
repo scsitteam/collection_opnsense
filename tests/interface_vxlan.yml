@@ -185,3 +185,195 @@
         'data' not in opn_clean1 or
         opn_clean1.data | length != 0
       when: not ansible_check_mode
+
+- name: Testing VXLAN interfaces - Mass Management
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.list:
+      target: 'interface_vxlan'
+
+    oxlorg.opnsense.interface_vxlan:
+      multi_control:
+        output_info: true
+        fail_verify: true
+        fail_process: true
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      oxlorg.opnsense.interface_vxlan:
+        multi_purge:
+          - id: 100
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because of invalid interface (server-side)
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 100
+            local: '192.168.0.1'
+            interface: 'invalid'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+      when: not ansible_check_mode
+
+    - name: Adding 1 - failing because of missing local-ip
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 100
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Adding 1 - failing because of invalid local-ip
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 100
+            local: '192.168.0.1000'
+            interface: 'lan'
+      register: opn_fail4
+      failed_when: not opn_fail4.failed
+
+    - name: Adding 1 - failing because of invalid remote-ip
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 100
+            local: '192.168.0.1'
+            remote: '192.168.1.1000'
+            interface: 'lan'
+      register: opn_fail5
+      failed_when: not opn_fail5.failed
+
+    - name: Adding 1 - failing because of invalid group-ip
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 100
+            local: '192.168.0.1'
+            group: '192.168.1.1000'
+            interface: 'lan'
+      register: opn_fail6
+      failed_when: not opn_fail6.failed
+
+    - name: Adding 1 - failing because of missing remote-address/mc-group (server-side)
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 100
+            local: '192.168.0.1'
+            interface: 'lan'
+      register: opn_fail7
+      failed_when: not opn_fail7.failed
+      when: not ansible_check_mode
+
+    - name: Adding 1 - failing because interface & remote-address are set (server-side)
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 100
+            local: '192.168.0.1'
+            remote: '192.168.2.1'
+            interface: 'lan'
+      register: opn_fail8
+      failed_when: not opn_fail8.failed
+      when: not ansible_check_mode
+
+    - name: Adding 1 and 2
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 100
+            local: '192.168.0.1'
+            remote: '192.168.2.1'
+          - id: 101
+            local: '192.168.1.1'
+            group: '192.168.3.1'
+            interface: 'lan'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Adding 2 - nothing changed
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 101
+            local: '192.168.1.1'
+            group: '192.168.3.1'
+            interface: 'lan'
+      register: opn6
+      diff: true
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      oxlorg.opnsense.interface_vxlan:
+        multi_purge:
+          - id: 101
+            local: '192.168.1.1'
+            group: '192.168.3.1'
+            interface: 'lan'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Adding 3 with ports
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 102
+            local: '192.168.4.1'
+            local_port: 10800
+            remote: '192.168.5.1'
+            remote_port: 10801
+      register: opn8
+      failed_when: >
+        opn8.failed or
+        not opn8.changed
+
+    - name: Change 3 ports
+      oxlorg.opnsense.interface_vxlan:
+        interface_vxlans:
+          - id: 102
+            local: '192.168.4.1'
+            local_port: 10900
+            remote: '192.168.5.1'
+            remote_port: 10901
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn10
+      failed_when: >
+        'data' not in opn10 or
+        opn10.data | length != 2
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      oxlorg.opnsense.interface_vxlan:
+        multi_control:
+          purge_all: true
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode

@@ -38,7 +38,7 @@ oxlorg.opnsense.interface_vlan
 This module manages VLAN configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - VLAN'
 
 oxlorg.opnsense.interface_vxlan
-===================================
+===============================
 
 This module manages VXLAN configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - VXLAN'
 
@@ -105,7 +105,7 @@ oxlorg.opnsense.interface_vlan
 
 
 oxlorg.opnsense.interface_vxlan
-===================================
+===============================
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
@@ -118,6 +118,7 @@ oxlorg.opnsense.interface_vxlan
     "remote","string","false","\-","remote_address, remote_ip, destination, vxlanremote, dest","Remote IP for the VxLAN tunnel - if unicast is used. The interface can be configured in a unicast, or point-to-point, mode to create a tunnel between two hosts. This is the IP address of the remote end of the tunnel."
     "remote_port","integer","false","\-","destination_port, vxlanremoteport, destport","Define the port to be used"
     "group","string","false","\-","multicast_group, multicast_address, multicast_ip, vxlangroup","Remote IP for the VxLAN tunnel - if multicast is used. The interface can be configured in a multicast mode to create a virtual network of hosts. This is the IP multicast group address the interface will join."
+    "multi","dict","false","\-","interface_vxlans, vxlans", .. include:: ../_include/param_multi.rst
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -310,7 +311,7 @@ oxlorg.opnsense.interface_vlan
             state: 'absent'
 
 oxlorg.opnsense.interface_vxlan
-===================================
+===============================
 
 .. code-block:: yaml
 
@@ -332,6 +333,23 @@ oxlorg.opnsense.interface_vxlan
             # remote: ''
             # group: ''
             # interface: 'lan'
+            # debug: false
+            # state: 'present'
+            # reload: true
+
+        - name: Example - Mass Management
+          oxlorg.opnsense.interface_vxlan:
+            interface_vxlans:
+              - id: 100
+                local: '192.168.0.1'
+                # remote: ''
+                # group: ''
+                # interface: 'lan'
+              - id: 101
+                local: '192.168.0.2'
+                # remote: ''
+                # group: ''
+                # interface: 'lan'
             # debug: false
             # state: 'present'
             # reload: true

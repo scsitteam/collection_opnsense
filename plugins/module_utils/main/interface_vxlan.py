@@ -43,8 +43,11 @@ class Vxlan(BaseModule):
     FIELDS_IP = ['local', 'remote', 'group']
     EXIST_ATTR = 'vxlan'
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None, fail: dict = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail)
+    def __init__(
+            self, module: AnsibleModule, result: dict, multi: dict = None,
+            session: Session = None, fail: dict = None,
+    ):
+        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail, multi=multi)
         self.vxlan = {}
 
     def check(self) -> None:
