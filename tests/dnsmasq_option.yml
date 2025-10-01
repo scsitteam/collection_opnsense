@@ -1,6 +1,6 @@
 ---
 
-- name: Testing stuff
+- name: Testing dnsmasq options
   hosts: localhost
   gather_facts: no
   module_defaults:
@@ -136,6 +136,160 @@
       loop:
         - 'ANSIBLE_TEST_1_1'
         - 'ANSIBLE_TEST_1_2'
+      when: not ansible_check_mode
+
+    - name: Cleanup mock tag
+      oxlorg.opnsense.dnsmasq_tag:
+        tag: 'AnsibleTest1'
+        state: 'absent'
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_clean1
+      failed_when: >
+        'data' not in opn_clean1 or
+        opn_clean1.data | length != 0
+      when: not ansible_check_mode
+
+- name: Testing dnsmasq options - Mass Management
+  hosts: localhost
+  gather_facts: no
+  module_defaults:
+    group/oxlorg.opnsense.all:
+      firewall: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL') }}"
+      api_credential_file: "{{ lookup('ansible.builtin.env', 'TEST_API_KEY') }}"
+      ssl_verify: false
+
+    oxlorg.opnsense.list:
+      target: 'dnsmasq_option'
+
+    oxlorg.opnsense.dnsmasq_option:
+      multi_control:
+        output_info: true
+        fail_verify: true
+        fail_process: true
+
+  environment:
+    HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
+
+  tasks:
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn_pre1
+      failed_when: >
+        'data' not in opn_pre1 or
+        opn_pre1.data | length != 0
+
+    - name: Removing - does not exist
+      oxlorg.opnsense.dnsmasq_option:
+        multi_purge:
+          - description: 'ANSIBLE_TEST_2_1'
+      register: opn_pre2
+      failed_when: >
+        opn_pre2.failed or
+        opn_pre2.changed
+
+    - name: Adding 1 - failing because of no option
+      oxlorg.opnsense.dnsmasq_option:
+        dnsmasq_options:
+          - description: 'ANSIBLE_TEST_1_1'
+      register: opn_fail1
+      failed_when: not opn_fail1.failed
+
+    - name: Adding 2 - failing because of invalid option interface
+      oxlorg.opnsense.dnsmasq_option:
+        dnsmasq_options:
+          - description: 'ANSIBLE_TEST_1_1'
+            type: match
+            set_tag: Foo
+            interface: TEST
+            option: 211  # pxelinux reboottime
+            value: 30
+      register: opn_fail2
+      failed_when: not opn_fail2.failed
+
+    - name: Adding 2 - failing because of missin set_tag
+      oxlorg.opnsense.dnsmasq_option:
+        dnsmasq_options:
+          - description: 'ANSIBLE_TEST_1_1'
+            type: match
+            option: 211  # pxelinux reboottime
+            value: 30
+      register: opn_fail3
+      failed_when: not opn_fail3.failed
+
+    - name: Adding mock tag
+      oxlorg.opnsense.dnsmasq_tag:
+        tag: 'AnsibleTest1'
+      when: not ansible_check_mode
+
+    - name: Adding 1 and 2
+      oxlorg.opnsense.dnsmasq_option:
+        dnsmasq_options:
+          - description: 'ANSIBLE_TEST_2_1'
+            option: 211  # pxelinux reboottime
+            value: 30
+          - description: 'ANSIBLE_TEST_2_2'
+            type: match
+            option: 211  # pxelinux reboottime
+            value: 30
+            set_tag: 'AnsibleTest1'
+            state: '{{ ansible_check_mode | ternary("absent", "present") }}'
+      register: opn1
+      failed_when: >
+        opn1.failed or
+        not opn1.changed
+
+    - name: Changing 1
+      oxlorg.opnsense.dnsmasq_option:
+        dnsmasq_options:
+          - description: 'ANSIBLE_TEST_1_1'
+            option: 211  # pxelinux reboottime
+            value: 30
+            interface: TEST
+            force: true
+      register: opn9
+      failed_when: >
+        opn9.failed or
+        not opn9.changed
+
+    - name: Adding 2 - nothing changed
+      oxlorg.opnsense.dnsmasq_option:
+        dnsmasq_options:
+          - description: 'ANSIBLE_TEST_1_2'
+            type: match
+            option: 211  # pxelinux reboottime
+            value: 30
+            set_tag: 'AnsibleTest1'
+      register: opn6
+      failed_when: >
+        opn6.failed or
+        opn6.changed
+      when: not ansible_check_mode
+
+    - name: Removing 2
+      oxlorg.opnsense.dnsmasq_option:
+        multi_purge:
+          - description: 'ANSIBLE_TEST_1_2'
+      register: opn7
+      failed_when: >
+        opn7.failed or
+        not opn7.changed
+      when: not ansible_check_mode
+
+    - name: Listing
+      oxlorg.opnsense.list:
+      register: opn8
+      failed_when: >
+        'data' not in opn8 or
+        opn8.data | length != 1
+      when: not ansible_check_mode
+
+    - name: Cleanup
+      oxlorg.opnsense.dnsmasq_option:
+        multi_control:
+          purge_all: true
       when: not ansible_check_mode
 
     - name: Cleanup mock tag
