@@ -88,7 +88,7 @@ Definition
 .. include:: ../_include/param_basic.rst
 
 oxlorg.opnsense.interface_vlan
-==================================
+==============================
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
@@ -98,6 +98,8 @@ oxlorg.opnsense.interface_vlan
     "interface","string","false for state changes, else true","\-","parent, port, int, if","The parent interface to add the vlan to. Existing VLAN capable interface - you must provide the network port as shown in 'Interfaces - Assignments - Network port'"
     "vlan","integer","false for state changes, else true","\-","tag, id","802.1Q VLAN tag (between 1 and 4094)"
     "priority","integer","false","0","prio","802.1Q VLAN PCP (between 0 and 7)"
+    "protocol","str","false","\-","proto","Enforce protocol selection. 802.1Q is the default for VLAN interfaces, but 802.1ad is used when the parent is a VLAN. one of '802.1q' or '802.1ad'"
+    "device","str","false","vlan0.<vlan>","vlanif","Optional 'device' of the entry. Needs to start with 'vlan0'"
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -239,7 +241,7 @@ Examples
 ********
 
 oxlorg.opnsense.interface_vlan
-==================================
+==============================
 
 .. code-block:: yaml
 
@@ -260,6 +262,8 @@ oxlorg.opnsense.interface_vlan
             interface: 'vtnet0'
             vlan: 100
             # priority: 0
+            # protocol:
+            # device:
             # debug: false
             # state: 'present'
             # reload: true

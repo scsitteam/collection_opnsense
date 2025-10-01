@@ -26,10 +26,11 @@ class Vlan(BaseModule):
         'interface': 'if',
         'vlan': 'tag',
         'priority': 'pcp',
+        'protocol': 'proto',
         'description': 'descr',
     }
     FIELDS_TYPING = {
-        'select': ['interface', 'priority'],
+        'select': ['interface', 'priority', 'protocol'],
         'int': ['vlan', 'priority'],
     }
     INT_VALIDATIONS = {

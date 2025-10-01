@@ -104,6 +104,7 @@
         interface: '{{ if_vlan }}'
         vlan: 101
         priority: 5
+        protocol: '802.1q'
         device: 'vlan0.101'
       register: opn5
       failed_when: >
@@ -116,6 +117,7 @@
         interface: '{{ if_vlan }}'
         vlan: 101
         priority: 5
+        protocol: '802.1q'
         device: 'vlan0.101'
       register: opn6
       failed_when: >

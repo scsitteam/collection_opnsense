@@ -44,6 +44,11 @@ def run_module():
             type='int', required=False, default=0, aliases=['prio', 'pcp'],
             description='802.1Q VLAN PCP (priority code point)'
         ),
+        protocol=dict(
+            type='str', required=False, options=['802.1q', '802.1ad'], aliases=['proto'],
+            description='Enforce protocol selection. 802.1Q is the default for VLAN interfaces, '
+                        'but 802.1ad is used when the parent is a VLAN',
+        ),
         description=dict(type='str', required=True, aliases=['desc', 'name']),
         **RELOAD_MOD_ARG,
         **STATE_ONLY_MOD_ARG,
