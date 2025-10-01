@@ -12,7 +12,10 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler impor
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import module_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import \
+        module_wrapper, is_multi_module_call, module_multi_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.multi import \
+        build_multi_mod_args
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_ONLY_MOD_ARG
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.dnsmasq_domain import Domain
@@ -26,7 +29,7 @@ except MODULE_EXCEPTIONS:
 
 
 def run_module():
-    module_args = dict(
+    entry_args = dict(
         domain=dict(
             type='str', required=True, aliases=['name'],
             description='Domain to override.',
@@ -56,6 +59,16 @@ def run_module():
             description='Description here for your reference.',
         ),
         **STATE_ONLY_MOD_ARG,
+    )
+    entry_multi_args = build_multi_mod_args(
+        mod_args=entry_args,
+        aliases=['dnsmasq_domains', 'domains'],
+        not_required=['domain'],
+    )
+
+    module_args = dict(
+        **entry_args,
+        **entry_multi_args,
         **OPN_MOD_ARGS,
     )
 
@@ -70,9 +83,25 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        mutually_exclusive=[
+            ('domain', 'multi'), ('domain', 'multi_purge'), ('domain', 'multi_control.purge_all'),
+        ],
+        required_one_of=[
+            ('domain', 'multi', 'multi_purge', 'multi_control.purge_all'),
+        ],
     )
 
-    module_wrapper(Domain(module=module, result=result))
+    if is_multi_module_call(module):
+        module_multi_wrapper(
+            module=module,
+            result=result,
+            obj=Domain,
+            kind='dnsmasq_domains',
+            entry_args=entry_multi_args,
+        )
+
+    else:
+        module_wrapper(Domain(module=module, result=result))
     module.exit_json(**result)
 
 
