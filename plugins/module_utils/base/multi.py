@@ -293,7 +293,7 @@ class MultiModule:
         else:
             self.m.fail_json('Got invalid Mass-Management arguments!')
 
-        if self.r['changed'] and self.p['reload']:
+        if self.r['changed'] and self.p.get('reload', False):
             self.meta_entry.reload()
 
         self.s.close()
