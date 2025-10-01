@@ -12,7 +12,10 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler impor
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import module_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import \
+        module_wrapper, is_multi_module_call, module_multi_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.multi import \
+        build_multi_mod_args, MultiModuleCallbacks
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_ONLY_MOD_ARG
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.dnsmasq_range import Range
@@ -25,8 +28,28 @@ except MODULE_EXCEPTIONS:
 # EXAMPLES = 'https://ansible-opnsense.oxl.app/modules/dnsmasq.html'
 
 
+class MultiCallbacks(MultiModuleCallbacks):
+    @staticmethod
+    def get_existing(meta_entry: Range) -> dict:
+        existing = meta_entry.get_existing()
+        return {
+            'main': existing,
+            **{
+                key: getattr(meta_entry, key)
+                for key in getattr(meta_entry, 'SEARCH_ADDITIONAL', {})
+            },
+        }
+
+    @staticmethod
+    def set_existing(entry: Range, cache: dict):
+        entry.existing_entries = cache['main']
+        for key in getattr(entry, 'SEARCH_ADDITIONAL', {}):
+            setattr(entry, key, cache[key])
+        entry.simplify_existing = lambda e: e
+
+
 def run_module():
-    module_args = dict(
+    entry_args = dict(
         description=dict(
             type='str', required=True, aliases=['desc'],
             description='DHCP range description.',
@@ -101,6 +124,16 @@ def run_module():
             description='Lifetime of the route.',
         ),
         **STATE_ONLY_MOD_ARG,
+    )
+    entry_multi_args = build_multi_mod_args(
+        mod_args=entry_args,
+        aliases=['dnsmasq_ranges', 'ranges'],
+        not_required=['description'],
+    )
+
+    module_args = dict(
+        **entry_args,
+        **entry_multi_args,
         **OPN_MOD_ARGS,
     )
 
@@ -115,9 +148,26 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        mutually_exclusive=[
+            ('description', 'multi'), ('description', 'multi_purge'), ('description', 'multi_control.purge_all'),
+        ],
+        required_one_of=[
+            ('description', 'multi', 'multi_purge', 'multi_control.purge_all'),
+        ],
     )
 
-    module_wrapper(Range(module=module, result=result))
+    if is_multi_module_call(module):
+        module_multi_wrapper(
+            module=module,
+            result=result,
+            obj=Range,
+            kind='dnsmasq_range',
+            entry_args=entry_multi_args,
+            callbacks=MultiCallbacks,
+        )
+
+    else:
+        module_wrapper(Range(module=module, result=result))
     module.exit_json(**result)
 
 

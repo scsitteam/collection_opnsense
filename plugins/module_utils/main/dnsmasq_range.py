@@ -45,8 +45,11 @@ class Range(BaseModule):
         'prefix_len': {'min': 1, 'max': 64},
     }
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session)
+    def __init__(
+            self, module: AnsibleModule, result: dict, multi: dict = None,
+            session: Session = None, fail: dict = None,
+    ):
+        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail, multi=multi)
         self.option = {}
         self.existing_tag = {}
         self.existing_interface = {}
