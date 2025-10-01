@@ -2,6 +2,8 @@ from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.api import \
     Session
+from ansible_collections.oxlorg.opnsense.plugins.module_utils.helper.main import \
+    is_unset
 from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.cls import BaseModule
 
 
@@ -30,13 +32,20 @@ class Boot(BaseModule):
         'existing_interface': 'dnsmasq.interface',
     }
 
-    def __init__(self, module: AnsibleModule, result: dict, session: Session = None):
-        BaseModule.__init__(self=self, m=module, r=result, s=session)
+    def __init__(
+            self, module: AnsibleModule, result: dict, multi: dict = None,
+            session: Session = None, fail: dict = None,
+    ):
+        BaseModule.__init__(self=self, m=module, r=result, s=session, f=fail, multi=multi)
         self.boot = {}
         self.existing_tag = {}
         self.existing_interface = {}
 
     def check(self) -> None:
+        if self.p['state'] == 'present':
+            if is_unset(self.p['filename']):
+                self.m.fail_json("A 'filename', is required.")
+
         self._base_check()
 
         if self.p['state'] == 'present':
