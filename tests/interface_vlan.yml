@@ -12,6 +12,9 @@
     oxlorg.opnsense.list:
       target: 'interface_vlan'
 
+  vars:
+    if_vlan: "{{ lookup('ansible.builtin.env', 'TEST_FIREWALL_VLAN_IF') | default('vtnet0', true) }}"
+
   environment:
     HTTPS_PROXY: "{{ lookup('ansible.builtin.env', 'TEST_PROXY') | default('') }}"
 
@@ -51,7 +54,7 @@
     - name: Adding 1 - failing because of invalid vlan-id
       oxlorg.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_1'
-        interface: 'vtnet0'
+        interface: '{{ if_vlan }}'
         vlan: 4100
       register: opn_fail4
       failed_when: not opn_fail4.failed
@@ -59,7 +62,7 @@
     - name: Adding 1
       oxlorg.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_1'
-        interface: 'vtnet0'
+        interface: '{{ if_vlan }}'
         vlan: 100
       register: opn1
       failed_when: >
@@ -69,7 +72,7 @@
     - name: Adding 2 - failing because of duplicate vlan-id (server-side)
       oxlorg.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_2'
-        interface: 'vtnet0'
+        interface: '{{ if_vlan }}'
         vlan: 100
       register: opn_fail5
       failed_when: not opn_fail5.failed
@@ -78,7 +81,7 @@
     - name: Adding 2 - failing because of invalid device-name (server-side)
       oxlorg.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_2'
-        interface: 'vtnet0'
+        interface: '{{ if_vlan }}'
         vlan: 100
         device: 'vlan100'
       register: opn_fail5
@@ -88,7 +91,7 @@
     - name: Adding 2 - failing because of duplicate device-name (server-side)
       oxlorg.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_2'
-        interface: 'vtnet0'
+        interface: '{{ if_vlan }}'
         vlan: 100
         device: 'vlan0.100'
       register: opn_fail5
@@ -98,7 +101,7 @@
     - name: Adding 2
       oxlorg.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_2'
-        interface: 'vtnet0'
+        interface: '{{ if_vlan }}'
         vlan: 101
         priority: 5
         device: 'vlan0.101'
@@ -110,7 +113,7 @@
     - name: Adding 2 - nothing changed
       oxlorg.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_2'
-        interface: 'vtnet0'
+        interface: '{{ if_vlan }}'
         vlan: 101
         priority: 5
         device: 'vlan0.101'
@@ -123,7 +126,7 @@
     - name: Removing 2
       oxlorg.opnsense.interface_vlan:
         description: 'ANSIBLE_TEST_1_2'
-        interface: 'vtnet0'
+        interface: '{{ if_vlan }}'
         vlan: 101
         priority: 5
         device: 'vlan0.101'
