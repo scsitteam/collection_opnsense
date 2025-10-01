@@ -53,7 +53,7 @@ oxlorg.opnsense.interface_lagg
 This module manages LAGG configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - LAGG'
 
 oxlorg.opnsense.interface_loopback
-======================================
+==================================
 
 This module manages Loopback configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - Loopback'
 
