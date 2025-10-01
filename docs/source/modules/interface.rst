@@ -58,7 +58,7 @@ oxlorg.opnsense.interface_loopback
 This module manages Loopback configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - Loopback'
 
 oxlorg.opnsense.interface_gre
-=================================
+=============================
 
 This module manages GRE Tunnel configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - GRE'
 
@@ -182,7 +182,7 @@ oxlorg.opnsense.interface_loopback
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_gre
-=================================
+=============================
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
@@ -194,6 +194,7 @@ oxlorg.opnsense.interface_gre
     "tunnel_local","string","true","\-","tl, tunnel_local_addr","Local gre tunnel endpoint."
     "tunnel_remote","string","true","\-","tr, tunnel_remote_addr","Remote gre tunnel endpoint."
     "tunnel_remote_net","integer","false","32","\-","Netmask `ipv4` or prefix `ipv6` to use for this tunnel "
+    "multi","dict","false","\-","interface_gres, gres", .. include:: ../_include/param_multi.rst
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 oxlorg.opnsense.interface_bridge
@@ -597,7 +598,7 @@ oxlorg.opnsense.interface_loopback
             state: 'absent'
 
 oxlorg.opnsense.interface_gre
-=================================
+=============================
 
 .. code-block:: yaml
 
@@ -620,6 +621,25 @@ oxlorg.opnsense.interface_gre
             tunnel_local: '10.0.0.1'
             tunnel_remote: '10.0.0.2'
             # tunnel_remote_net: 32
+            # debug: false
+            # state: 'present'
+            # reload: true
+
+        - name: Example - Mass Management
+          oxlorg.opnsense.interface_gre:
+            interface_gres:
+              - description: 'MyGRETunnel'
+                local: 'lan'
+                remote: '192.168.100.1'
+                tunnel_local: '10.0.0.1'
+                tunnel_remote: '10.0.0.2'
+                # tunnel_remote_net: 32
+              - description: 'MyGRETunnel2'
+                local: 'lan'
+                remote: '192.168.200.1'
+                tunnel_local: '10.0.2.1'
+                tunnel_remote: '10.0.2.2'
+                # tunnel_remote_net: 32
             # debug: false
             # state: 'present'
             # reload: true
