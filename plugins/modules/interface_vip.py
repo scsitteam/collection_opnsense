@@ -12,7 +12,10 @@ from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.handler impor
     module_dependency_error, MODULE_EXCEPTIONS
 
 try:
-    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import module_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.wrapper import \
+        module_wrapper, is_multi_module_call, module_multi_wrapper
+    from ansible_collections.oxlorg.opnsense.plugins.module_utils.base.multi import \
+        build_multi_mod_args
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.defaults.main import \
         OPN_MOD_ARGS, STATE_ONLY_MOD_ARG, RELOAD_MOD_ARG
     from ansible_collections.oxlorg.opnsense.plugins.module_utils.main.interface_vip import Vip
@@ -26,7 +29,7 @@ except MODULE_EXCEPTIONS:
 
 
 def run_module():
-    module_args = dict(
+    entry_args = dict(
         address=dict(
             type='str', required=True, aliases=['addr', 'ip', 'network', 'net'],
             description='Provide an address and subnet to use. (e.g 192.168.0.1/24)',
@@ -87,8 +90,18 @@ def run_module():
             choices=['address', 'interface', 'cidr', 'description'],
             default=['address', 'interface'],
         ),
-        **RELOAD_MOD_ARG,
         **STATE_ONLY_MOD_ARG,
+    )
+    entry_multi_args = build_multi_mod_args(
+        mod_args=entry_args,
+        aliases=['interface_vips', 'vips'],
+        not_required=['address', 'interface'],
+    )
+
+    module_args = dict(
+        **entry_args,
+        **entry_multi_args,
+        **RELOAD_MOD_ARG,
         **OPN_MOD_ARGS,
     )
 
@@ -103,9 +116,29 @@ def run_module():
     module = AnsibleModule(
         argument_spec=module_args,
         supports_check_mode=True,
+        mutually_exclusive=[
+            ('address', 'multi'), ('address', 'multi_purge'), ('address', 'multi_control.purge_all'),
+            ('interface', 'multi'), ('interface', 'multi_purge'), ('interface', 'multi_control.purge_all'),
+        ],
+        required_one_of=[
+            ('address', 'multi', 'multi_purge', 'multi_control.purge_all'),
+        ],
+        required_together=[
+            ('address', 'interface'),
+        ],
     )
 
-    module_wrapper(Vip(module=module, result=result))
+    if is_multi_module_call(module):
+        module_multi_wrapper(
+            module=module,
+            result=result,
+            obj=Vip,
+            kind='interface_vip',
+            entry_args=entry_multi_args,
+        )
+
+    else:
+        module_wrapper(Vip(module=module, result=result))
     module.exit_json(**result)
 
 

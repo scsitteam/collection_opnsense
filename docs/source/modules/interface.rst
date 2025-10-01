@@ -43,7 +43,7 @@ oxlorg.opnsense.interface_vxlan
 This module manages VXLAN configuration that can be found in the WEB-UI menu: 'Interfaces - Devices - VXLAN'
 
 oxlorg.opnsense.interface_vip
-=================================
+=============================
 
 This module manages VIP configuration that can be found in the WEB-UI menu: 'Interfaces - Virtual IPs - Settings'
 
@@ -123,7 +123,7 @@ oxlorg.opnsense.interface_vxlan
 
 
 oxlorg.opnsense.interface_vip
-=================================
+=============================
 
 ..  csv-table:: Definition
     :header: "Parameter", "Type", "Required", "Default", "Aliases", "Comment"
@@ -141,6 +141,7 @@ oxlorg.opnsense.interface_vip
     "advertising_base", "integer", "false", "1", "adv_base, base", "The frequency that this machine will advertise. 0 usually means master. Otherwise the lowest combination of both values in the cluster determines the master"
     "advertising_skew", "integer", "false", "0", "adv_skew, skew", "\-"
     "description","string","false","\-","desc, name","Optional description"
+    "multi","dict","false","\-","interface_vips, vips", .. include:: ../_include/param_multi.rst
     "reload","boolean","false","true","\-", .. include:: ../_include/param_reload.rst
 
 
@@ -375,7 +376,7 @@ oxlorg.opnsense.interface_vxlan
             state: 'absent'
 
 oxlorg.opnsense.interface_vip
-=================================
+=============================
 
 .. code-block:: yaml
 
@@ -404,6 +405,37 @@ oxlorg.opnsense.interface_vip
             # advertising_base: 1
             # advertising_skew: 0
             # description: ''
+            # debug: false
+            # state: 'present'
+            # reload: true
+
+        - name: Example - Mass Management
+          oxlorg.opnsense.interface_vip:
+            interface_vips:
+              - interface: 'opt1'
+                address: '192.168.0.100/24'
+                # match_fields: ['address', 'interface]
+                # mode: 'ipalias'
+                # expand: true
+                # bind: true
+                # gateway: ''
+                # password: ''
+                # vhid: ''
+                # advertising_base: 1
+                # advertising_skew: 0
+                # description: ''
+              - interface: 'opt1'
+                address: '192.168.0.101/24'
+                # match_fields: ['address', 'interface]
+                # mode: 'ipalias'
+                # expand: true
+                # bind: true
+                # gateway: ''
+                # password: ''
+                # vhid: ''
+                # advertising_base: 1
+                # advertising_skew: 0
+                # description: ''
             # debug: false
             # state: 'present'
             # reload: true
