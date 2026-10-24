@@ -520,6 +520,14 @@
         - 'ANSIBLE_TEST_1_2'
         - 'ANSIBLE_TEST_2_1'
 
+    - name: Cleanup Router Advertisements
+      oxlorg.opnsense.radvd:
+        interface: "{{ item }}"
+        state: 'absent'
+        reload: false
+      loop:
+        - 'lan'
+
     - name: Cleanup BIND general settings
       oxlorg.opnsense.bind_general:
         enabled: false
