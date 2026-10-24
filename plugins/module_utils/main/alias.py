@@ -29,7 +29,7 @@ class Alias(BaseModule):
     FIELDS_ALL = ['name', 'type', 'enabled']
     FIELDS_ALL.extend(FIELDS_CHANGE)
     FIELDS_ALL.extend([
-        'updatefreq_days', 'interface', 'path_expression',
+        'updatefreq_days', 'interface', 'path_expression', 'expire',
         'url_auth_type', 'url_username', 'url_password',
     ])
     FIELDS_DIFF_NO_LOG = ['url_password']
@@ -44,6 +44,12 @@ class Alias(BaseModule):
         'bool': ['enabled', 'statistics'],
         'select': ['type', 'interface'],
         'list_value': ['categories'],
+    }
+    INT_VALIDATIONS = {
+        'expire': {
+            'min': 60,
+            'max': 999999999,
+        },
     }
     EXIST_ATTR = 'alias'
     JOIN_CHAR = '\n'
@@ -72,6 +78,9 @@ class Alias(BaseModule):
                 self.m.fail_json('You need to provide an interface to create a dynipv6host alias!')
 
             self.FIELDS_CHANGE = self.FIELDS_CHANGE + ['interface']
+
+        elif self.p['type'] == 'external':
+            self.FIELDS_CHANGE = self.FIELDS_CHANGE + ['expire']
 
         if len(self.p['name']) > self.MAX_ALIAS_LEN:
             self._error(
